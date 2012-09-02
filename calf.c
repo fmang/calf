@@ -127,6 +127,7 @@ int main(int argc, char **argv){
             "<html>"
                 "<head>"
                     "<title>404 Not Found</title>"
+                    "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">"
                 "</head>"
                 "<body>"
                     "<h1>Oh noes, I can't find your file.</h1>"
@@ -144,6 +145,7 @@ int main(int argc, char **argv){
             "<head>"
                 "<title>Calf</title>"
                 "<link rel=\"stylesheet\" type=\"text/css\" href=\"/calf.css\" />"
+                "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">"
             "</head>"
             "<body>"
     );
@@ -195,7 +197,7 @@ int main(int argc, char **argv){
 
     puts(
             "</body>"
-        "<html>"
+        "</html>"
     );
 
     return EXIT_SUCCESS;

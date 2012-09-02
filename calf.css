@@ -12,8 +12,13 @@ div {
 table {
     float: left;
     margin: 20px;
+    padding: 7px;
     background-color: #04010f;
     color: #c1cfde;
+}
+
+th {
+    padding: 7px;
 }
 
 td {
@@ -21,21 +26,56 @@ td {
     padding: 3px;
 }
 
-th {
-    padding: 5px;
+td a {
+    color: #0c40ad;
+    text-decoration: none;
+}
+td:hover {
+    background-color: #050544;
 }
 
-.current { font-weight: bold; }
+td.current {
+    background-color: #030333;
+    font-weight: bold;
+}
 
 /* File listing */
 
-ul {
-    list-style-type: none;
-    padding: 10px;
+#listing {
     background-color: #929cd9;
+    color: #010211;
 }
 
-li {
-    padding: 5px;
-    font-size: 1.1em;
+#listing a {
+    color: #000312;
+    text-decoration: none;
 }
+
+#listing a:hover {
+    color: #0d4f74;
+}
+
+h2 {
+    margin: 0;
+    padding: 15px;
+    font-size: 1.7em;
+    font-weight: 100;
+}
+
+#listing span {
+    display: block;
+    padding: 0 15px 15px;
+}
+
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+li a {
+    display: block;
+    padding: 7px 20px;
+}
+
+li:nth-child(odd){ background: #8992d5; }

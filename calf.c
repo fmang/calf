@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <dirent.h>
+#include <unistd.h>
 #define __USE_XOPEN
 #include <time.h>
 
@@ -72,6 +73,11 @@ struct cal_t* print_html_calendar(struct cal_t *cal){
 }
 
 int main(int argc, char **argv){
+    if(!getenv("CALF_ROOT")){
+        fputs("No CALF_ROOT set.\n", stderr);
+        return EXIT_FAILURE;
+    }
+    chdir(getenv("CALF_ROOT"));
     puts(
         "Content-Type: text/html\n"
         "\n"

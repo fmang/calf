@@ -148,6 +148,7 @@ int main(int argc, char **argv){
                 "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">"
             "</head>"
             "<body>"
+                "<div id=\"main\">"
     );
 
     struct dirent **entries;
@@ -169,11 +170,14 @@ int main(int argc, char **argv){
     }
     free(entries);
 
+    puts("<div id=\"calendars\">");
     struct cal_t *current_day = first_day;
     while(current_day)
         current_day = print_html_calendar(current_day);
+    puts("</div>");
     free_cal(first_day);
 
+    puts("<div id=\"listing\">");
     char buf[128];
     strftime(buf, 128, "%F", &current_date);
     entry_count = scandir(buf, &entries, is_visible, alphasort);
@@ -190,12 +194,14 @@ int main(int argc, char **argv){
         puts("</ul>");
     }
     else if(entry_count < 0)
-        puts("<div>And not a single fuck was given that day.</div>");
+        puts("<span>And not a single fuck was given that day.</span>");
     else if(entry_count == 0)
-        puts("<div>Lol, you though something happened that day?</div>");
+        puts("<span>Lol, you thought something happened that day?</span>");
     free(entries);
+    puts("</div>");
 
     puts(
+                "</div>"
             "</body>"
         "</html>"
     );

@@ -1,15 +1,9 @@
+div { clear: both; }
+
 /* Calendar */
 
-table {
-    float: left;
-}
+table { float: left; }
 
-.current {
-    font-weight: bold;
-}
+.current { font-weight: bold; }
 
 /* File listing */
-
-ul {
-    clear: both;
-}

@@ -96,11 +96,13 @@ int set_current_date(){
 }
 
 int main(int argc, char **argv){
+
     if(!getenv("CALF_ROOT")){
         fputs("No CALF_ROOT set.\n", stderr);
         return EXIT_FAILURE;
     }
     chdir(getenv("CALF_ROOT"));
+
     if(!set_current_date()){
         puts(
             "Content-Type: text/html\n"
@@ -118,6 +120,7 @@ int main(int argc, char **argv){
         );
         return EXIT_SUCCESS;
     }
+
     puts(
         "Content-Type: text/html\n"
         "\n"
@@ -131,6 +134,7 @@ int main(int argc, char **argv){
             "</head>"
             "<body>"
     );
+
     struct dirent **entries;
     int entry_count = scandir(".", &entries, 0, alphasort);
     int i = 0;
@@ -149,14 +153,17 @@ int main(int argc, char **argv){
         free(entries[i]);
     }
     free(entries);
+
     struct cal_t *current_day = first_day;
     while(current_day)
         current_day = print_html_calendar(current_day);
-    puts("</ul>");
+    free_cal(first_day);
+
     puts(
             "</body>"
         "<html>"
     );
-    free_cal(first_day);
+
     return EXIT_SUCCESS;
+
 }

@@ -13,6 +13,8 @@ struct cal_t {
 
 struct cal_t *first_day = 0;
 
+struct tm current_date;
+
 void free_cal(struct cal_t *cur){
     struct cal_t *next;
     while(cur){
@@ -72,12 +74,42 @@ struct cal_t* print_html_calendar(struct cal_t *cal){
     return cal;
 }
 
+int set_current_date(){
+    char *pos;
+    if((pos = strptime(getenv("DOCUMENT_URI"), "/%F", &current_date))){
+        if(*pos == '\0' || strcmp(pos, "/") == 0) return 1;
+    }
+    if(strcmp(getenv("DOCUMENT_URI"), "/") == 0){
+        time_t now;
+        time(&now);
+        memcpy(&current_date, gmtime(&now), sizeof(struct tm));
+        return 1;
+    }
+    return 0;
+}
+
 int main(int argc, char **argv){
     if(!getenv("CALF_ROOT")){
         fputs("No CALF_ROOT set.\n", stderr);
         return EXIT_FAILURE;
     }
     chdir(getenv("CALF_ROOT"));
+    if(!set_current_date()){
+        puts(
+            "Content-Type: text/html\n"
+            "Status: 404 Not Found\n"
+            "\n"
+            "<!doctype html>"
+            "<html>"
+                "<head>"
+                    "<title>404 Not Found</title>"
+                "</head>"
+                "<body>"
+                    "<h1>Oh noes, the URL is invalid.</h1>"
+                "</body>"
+            "</html>"
+        );
+    }
     puts(
         "Content-Type: text/html\n"
         "\n"

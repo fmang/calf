@@ -1,7 +1,24 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include <time.h>
 #include <dirent.h>
+#define __USE_XOPEN
+#include <time.h>
+
+struct cal {
+    int year, month, day;
+    struct cal *next;
+};
+
+struct cal *first_day = 0;
+
+void free_cal(struct cal *cur){
+    struct cal *next;
+    while(cur){
+        next = cur->next;
+        free(cur);
+        cur = next;
+    }
+}
 
 int is_leap_year(int year){
     if(year % 400 == 0) return 1;
@@ -52,10 +69,6 @@ void print_html_calendar(int year, int month){
     puts("</table>");
 }
 
-int is_visible(const struct dirent *entry){
-    return entry->d_name[0] != '.';
-}
-
 int main(int argc, char **argv){
     puts(
         "Content-Type: text/html\n"
@@ -69,11 +82,22 @@ int main(int argc, char **argv){
     );
     print_html_calendar(2012, 9);
     struct dirent **entries;
-    int entry_count = scandir(".", &entries, is_visible, alphasort);
+    int entry_count = scandir(".", &entries, 0, alphasort);
     int i = 0;
-    puts("<ul>");
+    struct cal **current_day = &first_day;
+    struct tm date;
+    char *pos;
     for(; i < entry_count; i++){
-        printf("<li>%s</li>", entries[i]->d_name);
+        if((pos = strptime(entries[i]->d_name, "%F", &date))){
+            if(*pos == '\0'){
+                *current_day = (struct cal*) malloc(sizeof(struct cal));
+                (*current_day)->year = date.tm_year;
+                (*current_day)->month = date.tm_mon;
+                (*current_day)->day = date.tm_mday;
+                (*current_day)->next = 0;
+                current_day = &((*current_day)->next);
+            }
+        }
         free(entries[i]);
     }
     free(entries);
@@ -82,5 +106,6 @@ int main(int argc, char **argv){
             "</body>"
         "<html>"
     );
+    free_cal(first_day);
     return EXIT_SUCCESS;
 }

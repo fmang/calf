@@ -179,6 +179,8 @@ int main(int argc, char **argv){
 
     puts("<div id=\"listing\">");
     char buf[128];
+    strftime(buf, 128, "%B %-d, %Y", &current_date);
+    printf("<h2>%s</h2>", buf);
     strftime(buf, 128, "%F", &current_date);
     entry_count = scandir(buf, &entries, is_visible, alphasort);
     if(entry_count > 0){

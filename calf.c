@@ -25,7 +25,28 @@ int day_of_week(int year, int month, int day){
     return date.tm_wday;
 }
 
+void print_html_calendar(int year, int month){
+    int dow = day_of_week(year, month, 1);
+    int day = 1, last_day = days_for_month(year, month);
+    int i = 0;
+    puts("<table>");
+    if(dow != 0){
+        puts("<tr>");
+        for(; i < dow; i++) puts("<td></td>");
+    }
+    for(; day <= last_day; day++, dow = (dow+1)%7){
+        if(dow == 0) puts("<tr>");
+        printf("<td>%d</td>", day);
+        if(dow == 6) puts("</tr>");
+    }
+    if(dow < 6){
+        for(; dow < 7; dow++) puts("<td></td>");
+        puts("</tr>");
+    }
+    puts("</table>");
+}
+
 int main(int argc, char **argv){
-    printf("Day of week: %d\n", day_of_week(2012, 9, 2));
+    print_html_calendar(2012, 9);
     return EXIT_SUCCESS;
 }

@@ -1,9 +1,41 @@
-div { clear: both; }
+body {
+    background-color: #1f3370;
+}
+
+div {
+    clear: both;
+    margin: 20px;
+}
 
 /* Calendar */
 
-table { float: left; }
+table {
+    float: left;
+    margin: 20px;
+    background-color: #04010f;
+    color: #c1cfde;
+}
+
+td {
+    text-align: center;
+    padding: 3px;
+}
+
+th {
+    padding: 5px;
+}
 
 .current { font-weight: bold; }
 
 /* File listing */
+
+ul {
+    list-style-type: none;
+    padding: 10px;
+    background-color: #929cd9;
+}
+
+li {
+    padding: 5px;
+    font-size: 1.1em;
+}

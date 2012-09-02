@@ -174,6 +174,7 @@ int main(int argc, char **argv){
         free(entries[i]);
     }
     free(entries);
+    entries = 0;
 
     puts("<div id=\"calendars\">");
     struct cal_t *current_day = first_day;

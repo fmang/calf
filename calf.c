@@ -103,6 +103,8 @@ void print_escaped(const char *str){
     while(*str){
         if(*str == '"') fputs("&quot;", stdout);
         else if(*str == '&') fputs("&amp;", stdout);
+        else if(*str == '<') fputs("&lt;", stdout);
+        else if(*str == '>') fputs("&gt;", stdout);
         else putchar(*str);
         str++;
     }

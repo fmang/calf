@@ -63,7 +63,7 @@ struct cal_t* print_html_calendar(struct cal_t *cal){
         if(cal){
             if(cal->date.tm_mday == day){
                 strftime(buf, 128, "%F", &(cal->date));
-                printf("<a href=\"%s\">%d</a>", buf, day);
+                printf("<a href=\"/%s\">%d</a>", buf, day);
                 cal = cal->next;
             }
             else printf("%d", day);
@@ -111,10 +111,11 @@ int main(int argc, char **argv){
                     "<title>404 Not Found</title>"
                 "</head>"
                 "<body>"
-                    "<h1>Oh noes, the URL is invalid.</h1>"
+                    "<h1>Oh noes, I can't find your file.</h1>"
                 "</body>"
             "</html>"
         );
+        return EXIT_SUCCESS;
     }
     puts(
         "Content-Type: text/html\n"

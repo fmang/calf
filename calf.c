@@ -99,6 +99,15 @@ int is_visible(const struct dirent *entry){
     return entry->d_name[0] != '.';
 }
 
+void print_escaped(const char *str){
+    while(*str){
+        if(*str == '"') fputs("&quot;", stdout);
+        else if(*str == '&') fputs("&amp;", stdout);
+        else putchar(*str);
+        str++;
+    }
+}
+
 int main(int argc, char **argv){
 
     if(!getenv("CALF_ROOT")){
@@ -167,7 +176,11 @@ int main(int argc, char **argv){
     strftime(buf, 128, "%F", &current_date);
     entry_count = scandir(buf, &entries, is_visible, alphasort);
     for(i = 0; i < entry_count; i++){
-        printf("<li>%s</li>", entries[i]->d_name);
+        printf("<li><a href=\"/%s/", buf);
+        print_escaped(entries[i]->d_name);
+        printf("\">");
+        print_escaped(entries[i]->d_name);
+        puts("</a></li>");
         free(entries[i]);
     }
     if(entry_count < 0)

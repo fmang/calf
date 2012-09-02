@@ -15,21 +15,26 @@ int days_for_month(int year, int month){
     return 31;
 }
 
-int day_of_week(int year, int month, int day){
+struct tm mkdate(int year, int month, int day){
     struct tm date;
     date.tm_hour = date.tm_min = date.tm_sec = 0;
     date.tm_year = year-1900;
     date.tm_mon = month-1;
     date.tm_mday = day;
     mktime(&date);
-    return date.tm_wday;
+    return date;
 }
 
 void print_html_calendar(int year, int month){
-    int dow = day_of_week(year, month, 1);
+    struct tm date = mkdate(year, month, 1);
+    int dow = date.tm_wday;
     int day = 1, last_day = days_for_month(year, month);
     int i = 0;
-    puts("<table>");
+    puts("<table><tr><th colspan=\"7\">");
+    char pretty_month[128];
+    strftime(pretty_month, 128, "%B %Y", &date);
+    puts(pretty_month);
+    puts("</th>");
     if(dow != 0){
         puts("<tr>");
         for(; i < dow; i++) puts("<td></td>");

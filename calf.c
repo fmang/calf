@@ -48,6 +48,8 @@ void print_html_calendar(int year, int month){
 
 int main(int argc, char **argv){
     puts(
+        "Content-Type: text/html\n"
+        "\n"
         "<!doctype html>"
         "<html>"
             "<head>"

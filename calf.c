@@ -21,23 +21,23 @@ void free_cal(struct cal_t *cur){
     }
 }
 
-int is_leap_year(struct cal_t *cal){
-    if(cal->date.tm_year % 400 == 0) return 1;
-    if(cal->date.tm_year % 100 == 0) return 0;
-    if(cal->date.tm_year % 4 == 0) return 1;
+int is_leap_year(struct tm *date){
+    if(date->tm_year % 400 == 0) return 1;
+    if(date->tm_year % 100 == 0) return 0;
+    if(date->tm_year % 4 == 0) return 1;
     return 0;
 }
 
-int days_for_month(struct cal_t *cal){
-    int month = cal->date.tm_mon;
-    if(month == 2) return is_leap_year(cal) ? 29 : 28;
+int days_for_month(struct tm *date){
+    int month = date->tm_mon;
+    if(month == 2) return is_leap_year(date) ? 29 : 28;
     if(month == 4 || month == 6 || month == 9 || month == 11) return 30;
     return 31;
 }
 
 struct cal_t* print_html_calendar(struct cal_t *cal){
     int dow = (cal->date.tm_wday - cal->date.tm_mday + 7)%7;
-    int day = 1, last_day = days_for_month(cal);
+    int day = 1, last_day = days_for_month(&(cal->date));
     int i = 0;
     puts("<table><tr><th colspan=\"7\">");
     char buf[128];

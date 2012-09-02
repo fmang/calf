@@ -47,6 +47,18 @@ void print_html_calendar(int year, int month){
 }
 
 int main(int argc, char **argv){
+    puts(
+        "<!doctype html>"
+        "<html>"
+            "<head>"
+                "<title>Calf</title>"
+            "</head>"
+            "<body>"
+    );
     print_html_calendar(2012, 9);
+    puts(
+            "</body>"
+        "<html>"
+    );
     return EXIT_SUCCESS;
 }

@@ -137,18 +137,23 @@ int main(int argc, char **argv){
         return EXIT_SUCCESS;
     }
 
-    puts(
+    char *title = getenv("CALF_TITLE");
+    if(!title) title = "Calf";
+    char buf[128];
+    strftime(buf, 128, "%B %-d, %Y", &current_date);
+    printf(
         "Content-Type: text/html\n"
         "\n"
         "<!doctype html>"
         "<html>"
             "<head>"
-                "<title>Calf</title>"
+                "<title>%s - %s</title>"
                 "<link rel=\"stylesheet\" type=\"text/css\" href=\"/calf.css\" />"
                 "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">"
             "</head>"
             "<body>"
-                "<div id=\"main\">"
+                "<div id=\"main\">",
+        buf, title
     );
 
     struct dirent **entries;
@@ -178,8 +183,6 @@ int main(int argc, char **argv){
     free_cal(first_day);
 
     puts("<div id=\"listing\">");
-    char buf[128];
-    strftime(buf, 128, "%B %-d, %Y", &current_date);
     printf("<h2>%s</h2>", buf);
     strftime(buf, 128, "%F", &current_date);
     entry_count = scandir(buf, &entries, is_visible, alphasort);

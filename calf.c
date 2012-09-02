@@ -143,9 +143,7 @@ int main(int argc, char **argv){
         "<html>"
             "<head>"
                 "<title>Calf</title>"
-                "<style>"
-                    ".current { font-weight: bold; }"
-                "</style>"
+                "<link rel=\"stylesheet\" type=\"text/css\" href=\"/calf.css\" />"
             "</head>"
             "<body>"
     );

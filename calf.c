@@ -95,6 +95,10 @@ int set_current_date(){
     return 0;
 }
 
+int is_visible(const struct dirent *entry){
+    return entry->d_name[0] != '.';
+}
+
 int main(int argc, char **argv){
 
     if(!getenv("CALF_ROOT")){
@@ -136,7 +140,7 @@ int main(int argc, char **argv){
     );
 
     struct dirent **entries;
-    int entry_count = scandir(".", &entries, 0, alphasort);
+    int entry_count = scandir(".", &entries, is_visible, alphasort);
     int i = 0;
     struct cal_t **current_cal = &first_day;
     struct tm date;
@@ -158,6 +162,19 @@ int main(int argc, char **argv){
     while(current_day)
         current_day = print_html_calendar(current_day);
     free_cal(first_day);
+
+    char buf[128];
+    strftime(buf, 128, "%F", &current_date);
+    entry_count = scandir(buf, &entries, is_visible, alphasort);
+    for(i = 0; i < entry_count; i++){
+        printf("<li>%s</li>", entries[i]->d_name);
+        free(entries[i]);
+    }
+    if(entry_count < 0)
+        puts("<div>And not a single fuck was given that day.</div>");
+    else if(entry_count == 0)
+        puts("<div>Lol, you though something happened that day?</div>");
+    free(entries);
 
     puts(
             "</body>"

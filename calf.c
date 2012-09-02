@@ -175,15 +175,19 @@ int main(int argc, char **argv){
     char buf[128];
     strftime(buf, 128, "%F", &current_date);
     entry_count = scandir(buf, &entries, is_visible, alphasort);
-    for(i = 0; i < entry_count; i++){
-        printf("<li><a href=\"/%s/", buf);
-        print_escaped(entries[i]->d_name);
-        printf("\">");
-        print_escaped(entries[i]->d_name);
-        puts("</a></li>");
-        free(entries[i]);
+    if(entry_count > 0){
+        puts("<ul>");
+        for(i = 0; i < entry_count; i++){
+            printf("<li><a href=\"/%s/", buf);
+            print_escaped(entries[i]->d_name);
+            printf("\">");
+            print_escaped(entries[i]->d_name);
+            puts("</a></li>");
+            free(entries[i]);
+        }
+        puts("</ul>");
     }
-    if(entry_count < 0)
+    else if(entry_count < 0)
         puts("<div>And not a single fuck was given that day.</div>");
     else if(entry_count == 0)
         puts("<div>Lol, you though something happened that day?</div>");

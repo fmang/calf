@@ -1,3 +1,15 @@
+/* Calendar */
+
+table {
+    float: left;
+}
+
 .current {
     font-weight: bold;
+}
+
+/* File listing */
+
+ul {
+    clear: both;
 }

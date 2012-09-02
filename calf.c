@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
+#include <dirent.h>
 
 int is_leap_year(int year){
     if(year % 400 == 0) return 1;
@@ -51,6 +52,10 @@ void print_html_calendar(int year, int month){
     puts("</table>");
 }
 
+int is_visible(const struct dirent *entry){
+    return entry->d_name[0] != '.';
+}
+
 int main(int argc, char **argv){
     puts(
         "Content-Type: text/html\n"
@@ -63,6 +68,16 @@ int main(int argc, char **argv){
             "<body>"
     );
     print_html_calendar(2012, 9);
+    struct dirent **entries;
+    int entry_count = scandir(".", &entries, is_visible, alphasort);
+    int i = 0;
+    puts("<ul>");
+    for(; i < entry_count; i++){
+        printf("<li>%s</li>", entries[i]->d_name);
+        free(entries[i]);
+    }
+    free(entries);
+    puts("</ul>");
     puts(
             "</body>"
         "<html>"

@@ -1,11 +1,12 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include <dirent.h>
 #define __USE_XOPEN
 #include <time.h>
 
 struct cal_t {
-    int year, month, day;
+    struct tm date;
     struct cal_t *next;
 };
 
@@ -20,39 +21,28 @@ void free_cal(struct cal_t *cur){
     }
 }
 
-int is_leap_year(int year){
-    if(year % 400 == 0) return 1;
-    if(year % 100 == 0) return 0;
-    if(year % 4 == 0) return 1;
+int is_leap_year(struct cal_t *cal){
+    if(cal->date.tm_year % 400 == 0) return 1;
+    if(cal->date.tm_year % 100 == 0) return 0;
+    if(cal->date.tm_year % 4 == 0) return 1;
     return 0;
 }
 
-int days_for_month(int year, int month){
-    if(month == 2) return is_leap_year(year) ? 29 : 28;
+int days_for_month(struct cal_t *cal){
+    int month = cal->date.tm_mon;
+    if(month == 2) return is_leap_year(cal) ? 29 : 28;
     if(month == 4 || month == 6 || month == 9 || month == 11) return 30;
     return 31;
 }
 
-struct tm mkdate(int year, int month, int day){
-    struct tm date;
-    date.tm_hour = date.tm_min = date.tm_sec = 0;
-    date.tm_year = year-1900;
-    date.tm_mon = month-1;
-    date.tm_mday = day;
-    mktime(&date);
-    return date;
-}
-
 struct cal_t* print_html_calendar(struct cal_t *cal){
-    int year = cal->year, month = cal->month;
-    struct tm date = mkdate(year, month, 1);
-    int dow = date.tm_wday;
-    int day = 1, last_day = days_for_month(year, month);
+    int dow = (cal->date.tm_wday - cal->date.tm_mday + 7)%7;
+    int day = 1, last_day = days_for_month(cal);
     int i = 0;
     puts("<table><tr><th colspan=\"7\">");
-    char pretty_month[128];
-    strftime(pretty_month, 128, "%B %Y", &date);
-    puts(pretty_month);
+    char buf[128];
+    strftime(buf, 128, "%B %Y", &(cal->date));
+    puts(buf);
     puts("</th>");
     if(dow != 0){
         puts("<tr>");
@@ -61,8 +51,9 @@ struct cal_t* print_html_calendar(struct cal_t *cal){
     for(; day <= last_day; day++, dow = (dow+1)%7){
         if(dow == 0) puts("<tr>");
         if(cal){
-            if(cal->day == day){
-                printf("<td><a href=\"%04d-%02d-%02d\">%d</a></td>", year, month, day, day);
+            if(cal->date.tm_mday == day){
+                strftime(buf, 128, "%F", &(cal->date));
+                printf("<td><a href=\"%s\">%d</a></td>", buf, day);
                 cal = cal->next;
             }
             else
@@ -101,9 +92,7 @@ int main(int argc, char **argv){
         if((pos = strptime(entries[i]->d_name, "%F", &date))){
             if(*pos == '\0'){
                 *current_cal = (struct cal_t*) malloc(sizeof(struct cal_t));
-                (*current_cal)->year = date.tm_year+1900;
-                (*current_cal)->month = date.tm_mon+1;
-                (*current_cal)->day = date.tm_mday;
+                memcpy(&((*current_cal)->date), &date, sizeof(struct tm));
                 (*current_cal)->next = 0;
                 current_cal = &((*current_cal)->next);
             }

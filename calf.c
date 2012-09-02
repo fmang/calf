@@ -39,6 +39,7 @@ int days_for_month(struct tm *date){
 }
 
 struct cal_t* print_html_calendar(struct cal_t *cal){
+    int year = cal->date.tm_year, month = cal->date.tm_mon;
     int dow = (cal->date.tm_wday - cal->date.tm_mday + 7)%7;
     int day = 1, last_day = days_for_month(&(cal->date));
     int i = 0;
@@ -54,9 +55,9 @@ struct cal_t* print_html_calendar(struct cal_t *cal){
     for(; day <= last_day; day++, dow = (dow+1)%7){
         if(dow == 0) puts("<tr>");
         if(cal){
-            puts(cal->date.tm_year == current_date.tm_year
-                 && cal->date.tm_mon == current_date.tm_mon
-                 && cal->date.tm_mday == day
+            puts(year == current_date.tm_year
+                 && month == current_date.tm_mon
+                 && day == current_date.tm_mday
                 ? "<td class=\"current\">" : "<td>");
         }
         else puts("<td>");

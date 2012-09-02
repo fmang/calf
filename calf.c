@@ -54,16 +54,22 @@ struct cal_t* print_html_calendar(struct cal_t *cal){
     for(; day <= last_day; day++, dow = (dow+1)%7){
         if(dow == 0) puts("<tr>");
         if(cal){
+            puts(cal->date.tm_year == current_date.tm_year
+                 && cal->date.tm_mon == current_date.tm_mon
+                 && cal->date.tm_mday == day
+                ? "<td class=\"current\">" : "<td>");
+        }
+        else puts("<td>");
+        if(cal){
             if(cal->date.tm_mday == day){
                 strftime(buf, 128, "%F", &(cal->date));
-                printf("<td><a href=\"%s\">%d</a></td>", buf, day);
+                printf("<a href=\"%s\">%d</a>", buf, day);
                 cal = cal->next;
             }
-            else
-                printf("<td>%d</td>", day);
+            else printf("%d", day);
         }
-        else
-            printf("<td>%d</td>", day);
+        else printf("%d", day);
+        puts("</td>");
         if(dow == 6) puts("</tr>");
     }
     if(dow < 6){
@@ -117,6 +123,9 @@ int main(int argc, char **argv){
         "<html>"
             "<head>"
                 "<title>Calf</title>"
+                "<style>"
+                    ".current { font-weight: bold; }"
+                "</style>"
             "</head>"
             "<body>"
     );

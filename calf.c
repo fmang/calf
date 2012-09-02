@@ -4,15 +4,15 @@
 #define __USE_XOPEN
 #include <time.h>
 
-struct cal {
+struct cal_t {
     int year, month, day;
-    struct cal *next;
+    struct cal_t *next;
 };
 
-struct cal *first_day = 0;
+struct cal_t *first_day = 0;
 
-void free_cal(struct cal *cur){
-    struct cal *next;
+void free_cal(struct cal_t *cur){
+    struct cal_t *next;
     while(cur){
         next = cur->next;
         free(cur);
@@ -43,7 +43,8 @@ struct tm mkdate(int year, int month, int day){
     return date;
 }
 
-void print_html_calendar(int year, int month){
+struct cal_t* print_html_calendar(struct cal_t *cal){
+    int year = cal->year, month = cal->month;
     struct tm date = mkdate(year, month, 1);
     int dow = date.tm_wday;
     int day = 1, last_day = days_for_month(year, month);
@@ -59,7 +60,16 @@ void print_html_calendar(int year, int month){
     }
     for(; day <= last_day; day++, dow = (dow+1)%7){
         if(dow == 0) puts("<tr>");
-        printf("<td>%d</td>", day);
+        if(cal){
+            if(cal->day == day){
+                printf("<td><a href=\"%04d-%02d-%02d\">%d</a></td>", year, month, day, day);
+                cal = cal->next;
+            }
+            else
+                printf("<td>%d</td>", day);
+        }
+        else
+            printf("<td>%d</td>", day);
         if(dow == 6) puts("</tr>");
     }
     if(dow < 6){
@@ -67,6 +77,7 @@ void print_html_calendar(int year, int month){
         puts("</tr>");
     }
     puts("</table>");
+    return cal;
 }
 
 int main(int argc, char **argv){
@@ -80,27 +91,29 @@ int main(int argc, char **argv){
             "</head>"
             "<body>"
     );
-    print_html_calendar(2012, 9);
     struct dirent **entries;
     int entry_count = scandir(".", &entries, 0, alphasort);
     int i = 0;
-    struct cal **current_day = &first_day;
+    struct cal_t **current_cal = &first_day;
     struct tm date;
     char *pos;
     for(; i < entry_count; i++){
         if((pos = strptime(entries[i]->d_name, "%F", &date))){
             if(*pos == '\0'){
-                *current_day = (struct cal*) malloc(sizeof(struct cal));
-                (*current_day)->year = date.tm_year;
-                (*current_day)->month = date.tm_mon;
-                (*current_day)->day = date.tm_mday;
-                (*current_day)->next = 0;
-                current_day = &((*current_day)->next);
+                *current_cal = (struct cal_t*) malloc(sizeof(struct cal_t));
+                (*current_cal)->year = date.tm_year+1900;
+                (*current_cal)->month = date.tm_mon+1;
+                (*current_cal)->day = date.tm_mday;
+                (*current_cal)->next = 0;
+                current_cal = &((*current_cal)->next);
             }
         }
         free(entries[i]);
     }
     free(entries);
+    struct cal_t *current_day = first_day;
+    while(current_day)
+        current_day = print_html_calendar(current_day);
     puts("</ul>");
     puts(
             "</body>"

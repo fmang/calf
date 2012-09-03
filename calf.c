@@ -13,8 +13,8 @@ struct cal_t {
 };
 
 struct cal_t *first_day = 0;
-
 struct tm current_date;
+const char *root;
 
 void free_cal(struct cal_t *cur){
     struct cal_t *next;
@@ -65,7 +65,7 @@ struct cal_t* print_html_calendar(struct cal_t *cal){
         if(cal){
             if(cal->date.tm_mday == day){
                 strftime(buf, 128, "%F", &(cal->date));
-                printf("<a href=\"/%s\">%d</a>", buf, day);
+                printf("<a href=\"%s/%s\">%d</a>", root, buf, day);
                 cal = cal->next;
             }
             else printf("%d", day);
@@ -83,11 +83,16 @@ struct cal_t* print_html_calendar(struct cal_t *cal){
 }
 
 int set_current_date(){
+    const char *uri = getenv("DOCUMENT_URI");
+    if(strncmp(root, uri, strlen(root)) != 0)
+        return 0;
+    uri += strlen(root);
     char *pos;
-    if((pos = strptime(getenv("DOCUMENT_URI"), "/%F", &current_date))){
-        if(*pos == '\0' || strcmp(pos, "/") == 0) return 1;
+    if((pos = strptime(uri, "/%F", &current_date))){
+        if(*pos == '\0' || strcmp(pos, "/") == 0)
+            return 1;
     }
-    if(strcmp(getenv("DOCUMENT_URI"), "/") == 0){
+    else if(*uri == '\0' || strcmp(uri, "/") == 0){
         time_t now;
         time(&now);
         memcpy(&current_date, gmtime(&now), sizeof(struct tm));
@@ -119,6 +124,8 @@ int main(int argc, char **argv){
     }
     chdir(getenv("CALF_ROOT"));
 
+    root = getenv("CALF_URI");
+    if(!root) root = "";
     if(!set_current_date()){
         puts(
             "Content-Type: text/html\n"
@@ -149,12 +156,12 @@ int main(int argc, char **argv){
         "<html>"
             "<head>"
                 "<title>%s - %s</title>"
-                "<link rel=\"stylesheet\" type=\"text/css\" href=\"/calf.css\" />"
+                "<link rel=\"stylesheet\" type=\"text/css\" href=\"%s/calf.css\" />"
                 "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">"
             "</head>"
             "<body>"
                 "<div id=\"main\">",
-        buf, title
+        buf, title, root
     );
 
     struct dirent **entries;
@@ -198,7 +205,7 @@ int main(int argc, char **argv){
             strncpy(path, buf, 10);
             path[10] = '/';
             strcpy(path+11, entries[i]->d_name);
-            printf("<a href=\"/%s/", buf);
+            printf("<a href=\"%s/%s/", root, buf);
             print_escaped(entries[i]->d_name);
             printf("\">");
             if(stat(path, &st) == 0){

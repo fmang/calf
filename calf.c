@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <dirent.h>
+#include <sys/stat.h>
 #include <unistd.h>
 #define __USE_XOPEN
 #include <time.h>
@@ -188,16 +189,27 @@ int main(int argc, char **argv){
     strftime(buf, 128, "%F", &current_date);
     entry_count = scandir(buf, &entries, is_visible, alphasort);
     if(entry_count > 0){
+        char *path = 0;
+        struct stat st;
         puts("<ul>");
         for(i = 0; i < entry_count; i++){
-            printf("<li><a href=\"/%s/", buf);
+            printf("<li>");
+            path = (char*) realloc(path, strlen(entries[i]->d_name) + 11);
+            strncpy(path, buf, 10);
+            path[10] = '/';
+            strcpy(path+11, entries[i]->d_name);
+            printf("<a href=\"/%s/", buf);
             print_escaped(entries[i]->d_name);
             printf("\">");
+            if(stat(path, &st) == 0)
+                printf("<span class=\"size\">%lu</span>", st.st_size);
             print_escaped(entries[i]->d_name);
-            puts("</a></li>");
+            puts("</a>");
+            puts("</li>");
             free(entries[i]);
         }
         puts("</ul>");
+        if(path) free(path);
     }
     else if(entry_count < 0)
         puts("<span>And not a single fuck was given that day.</span>");

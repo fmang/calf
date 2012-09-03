@@ -81,3 +81,8 @@ li a {
 li:nth-child(odd){
     background: #8992d5;
 }
+
+li .size {
+    float: right;
+    font-size: 0.9em;
+}

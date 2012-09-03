@@ -221,7 +221,7 @@ int main(int argc, char **argv){
                     printf("%lu megs. Getting big :o", st.st_size/(1024*1024));
                 else if(st.st_size <= 900000000) // 200M - 900M
                     printf("%lu megs. Please don't hurt my bandwidth. I like my bandwidth :(", st.st_size/(1024*1024));
-                else if(st.st_size <= (off_t) 2*1024*1024*1024) // 900M - 2G
+                else if(st.st_size <= (long unsigned int) 2*1024*1024*1024) // 900M - 2G
                     puts("A gig or two. You won't get away with this!");
                 else
                     printf("%lu gigs. DON'T TOUCH IT!", st.st_size/(1024*1024*1024));

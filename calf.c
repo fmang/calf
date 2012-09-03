@@ -41,7 +41,7 @@ int days_for_month(struct tm *date){
 
 struct cal_t* print_html_calendar(struct cal_t *cal){
     int year = cal->date.tm_year, month = cal->date.tm_mon;
-    int dow = (cal->date.tm_wday - cal->date.tm_mday + 7)%7;
+    int dow = (cal->date.tm_wday - cal->date.tm_mday + 7*5)%7;
     int day = 1, last_day = days_for_month(&(cal->date));
     int i = 0;
     puts("<table><tr><th colspan=\"7\">");

@@ -37,7 +37,6 @@ td:hover {
 
 td.current {
     background-color: #030333;
-    font-weight: bold;
 }
 
 /* File listing */

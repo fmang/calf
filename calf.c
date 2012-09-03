@@ -208,7 +208,7 @@ int main(int argc, char **argv){
                 else if(st.st_size < 1000) // 1000, 1024; same thing, duh
                     puts("Not even a kilobyte, yay!");
                 else if(st.st_size < 9000) // 1k - 9k
-                    puts("A few kilos. Watch your disk space!");
+                    puts("A few kilos. Watch over your disk space!");
                 else if(st.st_size < 20000) // 9k - 20k
                     puts("OVER 9000 BYTES");
                 else if(st.st_size < 700000) // 20k - 700k

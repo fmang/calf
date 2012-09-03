@@ -193,7 +193,7 @@ int main(int argc, char **argv){
         struct stat st;
         puts("<ul>");
         for(i = 0; i < entry_count; i++){
-            printf("<li>");
+            puts("<li>");
             path = (char*) realloc(path, strlen(entries[i]->d_name) + 11);
             strncpy(path, buf, 10);
             path[10] = '/';
@@ -201,11 +201,32 @@ int main(int argc, char **argv){
             printf("<a href=\"/%s/", buf);
             print_escaped(entries[i]->d_name);
             printf("\">");
-            if(stat(path, &st) == 0)
-                printf("<span class=\"size\">%lu</span>", st.st_size);
+            if(stat(path, &st) == 0){
+                puts("<span class=\"size\">");
+                if(S_ISDIR(st.st_mode))
+                    puts("This is a directory");
+                else if(st.st_size < 1000) // 1000, 1024; same thing, duh
+                    puts("Not even a kilobyte, yay!");
+                else if(st.st_size < 9000) // 1k - 9k
+                    puts("A few kilos. Watch your disk space!");
+                else if(st.st_size < 20000) // 9k - 20k
+                    puts("OVER 9000 BYTES");
+                else if(st.st_size < 700000) // 20k - 700k
+                    printf("%lu kilos", st.st_size/1024);
+                else if(st.st_size < 1300000) // 700k - 1.3M
+                    puts("About a meg");
+                else if(st.st_size < 10000000) // 1.3M - 10M
+                    printf("%lu little megs", st.st_size/(1024*1024));
+                else if(st.st_size < 200000000) // 10M - 200M
+                    printf("%lu megs. Getting big :o", st.st_size/(1024*1024));
+                else if(st.st_size < 1000000000) // 200M - 1G
+                    printf("%lu megs. Please don't hurt my bandwidth. I like my bandwidth :(", st.st_size/(1024*1024));
+                else
+                    printf("%lu gigs. DON'T TOUCH IT!", st.st_size/(1024*1024*1024));
+                puts("</span>");
+            }
             print_escaped(entries[i]->d_name);
-            puts("</a>");
-            puts("</li>");
+            puts("</a></li>");
             free(entries[i]);
         }
         puts("</ul>");

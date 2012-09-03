@@ -75,7 +75,7 @@ ul {
 
 li a {
     display: block;
-    padding: 7px 20px;
+    padding: 7px 0 7px 20px;
 }
 
 li:nth-child(odd){

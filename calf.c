@@ -33,7 +33,7 @@ int is_leap_year(struct tm *date){
 }
 
 int days_for_month(struct tm *date){
-    int month = date->tm_mon;
+    int month = date->tm_mon + 1;
     if(month == 2) return is_leap_year(date) ? 29 : 28;
     if(month == 4 || month == 6 || month == 9 || month == 11) return 30;
     return 31;

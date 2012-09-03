@@ -205,22 +205,24 @@ int main(int argc, char **argv){
                 puts("<span class=\"size\">");
                 if(S_ISDIR(st.st_mode))
                     puts("This is a directory");
-                else if(st.st_size < 1000) // 1000, 1024; same thing, duh
+                else if(st.st_size < 1024) // < 1k
                     puts("Not even a kilobyte, yay!");
-                else if(st.st_size < 9000) // 1k - 9k
+                else if(st.st_size <= 9000) // 1k - 9k
                     puts("A few kilos. Watch over your disk space!");
-                else if(st.st_size < 20000) // 9k - 20k
+                else if(st.st_size <= 20000) // 9k - 20k
                     puts("OVER 9000 BYTES");
-                else if(st.st_size < 700000) // 20k - 700k
+                else if(st.st_size <= 700000) // 20k - 700k
                     printf("%lu kilos", st.st_size/1024);
-                else if(st.st_size < 1300000) // 700k - 1.3M
-                    puts("About a meg");
-                else if(st.st_size < 10000000) // 1.3M - 10M
+                else if(st.st_size <= 2*1024*1024) // 700k - 2M
+                    puts("About a meg or two");
+                else if(st.st_size <= 10*1024*1024) // 2M - 10M
                     printf("%lu little megs", st.st_size/(1024*1024));
-                else if(st.st_size < 200000000) // 10M - 200M
+                else if(st.st_size <= 200000000) // 10M - 200M
                     printf("%lu megs. Getting big :o", st.st_size/(1024*1024));
-                else if(st.st_size < 1000000000) // 200M - 1G
+                else if(st.st_size <= 900000000) // 200M - 900M
                     printf("%lu megs. Please don't hurt my bandwidth. I like my bandwidth :(", st.st_size/(1024*1024));
+                else if(st.st_size <= (off_t) 2*1024*1024*1024) // 900M - 2G
+                    puts("A gig or two. You won't get away with this!");
                 else
                     printf("%lu gigs. DON'T TOUCH IT!", st.st_size/(1024*1024*1024));
                 puts("</span>");

@@ -65,7 +65,7 @@ struct cal_t* print_html_calendar(struct cal_t *cal){
         if(cal){
             if(cal->date.tm_mday == day){
                 strftime(buf, 128, "%F", &(cal->date));
-                printf("<a href=\"%s/%s\">%d</a>", root, buf, day);
+                printf("<a href=\"%s/%s#listing\">%d</a>", root, buf, day);
                 cal = cal->next;
             }
             else printf("%d", day);

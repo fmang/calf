@@ -246,7 +246,7 @@ int main(int argc, char **argv){
     else if(entry_count == 0)
         puts("<span>Lol, you thought something happened that day?</span>");
     free(entries);
-    puts("</div>");
+    puts("</div><div style=\"clear:both;\"></div>");
 
     puts(
                 "</div>"

@@ -7,12 +7,14 @@ body {
 #calendars {
     float: left;
     width: 250px;
+    margin: 0 5px;
+    padding: 10px 0;
     text-align: center;
+    background-color: #04010f;
+    color: #c1cfde;
 }
 
 .calendar {
-    background-color: #04010f;
-    color: #c1cfde;
     padding: 5px;
 }
 .calendar h3 {
@@ -58,7 +60,7 @@ td.current { background-color: #030333; }
 #listing {
     background-color: #929cd9;
     color: #010211;
-    margin-left: 260px;
+    margin: 15px 5px 15px 270px;
 }
 
 #listing a {

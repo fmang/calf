@@ -44,7 +44,10 @@ struct cal_t* print_html_calendar(struct cal_t *cal){
     int dow = (cal->date.tm_wday - cal->date.tm_mday + 7*5)%7;
     int day = 1, last_day = days_for_month(&(cal->date));
     int i = 0;
-    puts("<div class=\"calendar\"><h3>");
+    fputs("<div class=\"calendar", stdout);
+    if(year == current_date.tm_year && month == current_date.tm_mon)
+        fputs(" current", stdout);
+    puts("\"><h3>");
     char buf[128];
     strftime(buf, 128, "%B %Y", &(cal->date));
     puts(buf);

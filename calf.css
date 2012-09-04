@@ -21,17 +21,16 @@ body {
     margin: 0;
     color: #717f9e;
 }
-.calendar:hover h3 {
+.calendar:hover h3, .calendar.current h3 {
     color: #d1dfee;
 }
 
-.calendar .subcalendar {
+.calendar .subcalendar { overflow: hidden; }
+.calendar .subcalendar, #calendars:hover .calendar.current .subcalendar {
     height: 0;
-    overflow: hidden;
     opacity: 0;
 }
-
-.calendar:hover .subcalendar {
+.calendar.current .subcalendar, #calendars .calendar:hover .subcalendar, #calendars .calendar.current:hover .subcalendar {
     height: inherit;
     opacity: 1;
     -webkit-transition: opacity 0.3s ease-in;

@@ -201,7 +201,7 @@ int main(int argc, char **argv){
         puts("<ul>");
         for(i = 0; i < entry_count; i++){
             puts("<li>");
-            path = (char*) realloc(path, strlen(entries[i]->d_name) + 11);
+            path = (char*) realloc(path, strlen(entries[i]->d_name) + 12);
             strncpy(path, buf, 10);
             path[10] = '/';
             strcpy(path+11, entries[i]->d_name);

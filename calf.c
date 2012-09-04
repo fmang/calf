@@ -44,11 +44,11 @@ struct cal_t* print_html_calendar(struct cal_t *cal){
     int dow = (cal->date.tm_wday - cal->date.tm_mday + 7*5)%7;
     int day = 1, last_day = days_for_month(&(cal->date));
     int i = 0;
-    puts("<table><tr><th colspan=\"7\">");
+    puts("<div class=\"calendar\"><h3>");
     char buf[128];
     strftime(buf, 128, "%B %Y", &(cal->date));
     puts(buf);
-    puts("</th></tr>");
+    puts("</h3><table>");
     if(dow != 0){
         puts("<tr>");
         for(; i < dow; i++) puts("<td></td>");
@@ -75,7 +75,7 @@ struct cal_t* print_html_calendar(struct cal_t *cal){
         for(; dow < 7; dow++) puts("<td></td>");
         puts("</tr>");
     }
-    puts("</table>");
+    puts("</table></div>");
     return cal;
 }
 

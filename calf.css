@@ -10,35 +10,33 @@ body {
     text-align: center;
 }
 
-table {
-    padding: 7px;
+.calendar {
     background-color: #04010f;
     color: #c1cfde;
-    margin: auto;
-    width: 230px;
-    empty-cells: hide;
+    padding: 10px;
+}
+.calendar h3 {
+    font-size: 1em;
+    padding: 5px;
+    margin: 0;
 }
 
-th {
-    padding: 7px;
+table {
+    margin: auto;
+    empty-cells: hide;
 }
 
 td {
     text-align: center;
-    padding: 3px;
+    padding: 4px;
 }
 
 td a {
     color: #0c40ad;
     text-decoration: none;
 }
-td:hover {
-    background-color: #050544;
-}
-
-td.current {
-    background-color: #030333;
-}
+td:hover { background-color: #050544; }
+td.current { background-color: #030333; }
 
 /* File listing */
 

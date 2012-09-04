@@ -55,13 +55,10 @@ struct cal_t* print_html_calendar(struct cal_t *cal){
     }
     for(; day <= last_day; day++, dow = (dow+1)%7){
         if(dow == 0) puts("<tr>");
-        if(cal){
-            puts(year == current_date.tm_year
-                 && month == current_date.tm_mon
-                 && day == current_date.tm_mday
-                ? "<td class=\"current\">" : "<td>");
-        }
-        else puts("<td>");
+        puts(year == current_date.tm_year
+             && month == current_date.tm_mon
+             && day == current_date.tm_mday
+            ? "<td class=\"current\">" : "<td>");
         if(cal){
             if(cal->date.tm_mday == day){
                 strftime(buf, 128, "%F", &(cal->date));

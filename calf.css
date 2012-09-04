@@ -2,20 +2,20 @@ body {
     background-color: #1f3370;
 }
 
-div {
-    clear: both;
-    margin: 20px 7px;
-}
-
 /* Calendar */
 
-table {
+#calendars {
     float: left;
-    margin: 0px 10px 20px;
+    width: 250px;
+    text-align: center;
+}
+
+table {
     padding: 7px;
     background-color: #04010f;
     color: #c1cfde;
-    height: 13.5em;
+    margin: auto;
+    width: 230px;
 }
 
 th {
@@ -44,6 +44,7 @@ td.current {
 #listing {
     background-color: #929cd9;
     color: #010211;
+    margin-left: 260px;
 }
 
 #listing a {

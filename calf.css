@@ -16,6 +16,7 @@ table {
     color: #c1cfde;
     margin: auto;
     width: 230px;
+    empty-cells: hide;
 }
 
 th {

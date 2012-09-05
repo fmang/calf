@@ -12,6 +12,15 @@ body {
     text-align: center;
     background-color: #04010f;
     color: #c1cfde;
+    display: box;
+    display: -moz-box;
+    display: -webkit-box;
+    box-orient: vertical;
+    -moz-box-orient: vertical;
+    -webkit-box-orient: vertical;
+    box-direction: reverse;
+    -moz-box-direction: reverse;
+    -webkit-box-direction: reverse;
 }
 
 .calendar {

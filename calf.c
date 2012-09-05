@@ -12,7 +12,6 @@ struct cal_t {
     struct cal_t *next;
 };
 
-struct cal_t *first_day = 0;
 struct tm current_date;
 const char *root;
 
@@ -167,16 +166,29 @@ int main(int argc, char **argv){
     struct dirent **entries;
     int entry_count = scandir(".", &entries, is_visible, alphasort);
     int i = 0;
-    struct cal_t **current_cal = &first_day;
+    struct cal_t *first_day = 0, *current_cal = 0, *new_cal;
     struct tm date;
     char *pos;
     for(; i < entry_count; i++){
         if((pos = strptime(entries[i]->d_name, "%F", &date))){
             if(*pos == '\0'){
-                *current_cal = (struct cal_t*) malloc(sizeof(struct cal_t));
-                memcpy(&((*current_cal)->date), &date, sizeof(struct tm));
-                (*current_cal)->next = 0;
-                current_cal = &((*current_cal)->next);
+                new_cal = (struct cal_t*) malloc(sizeof(struct cal_t));
+                memcpy(&(new_cal->date), &date, sizeof(struct tm));
+                if(current_cal){
+                    if(current_cal->date.tm_year == date.tm_year && current_cal->date.tm_mon == date.tm_mon){
+                        new_cal->next = current_cal->next;
+                        current_cal->next = new_cal;
+                        current_cal = new_cal;
+                    }
+                    else{
+                        new_cal->next = first_day;
+                        first_day = current_cal = new_cal;
+                    }
+                }
+                else{
+                    new_cal->next = 0;
+                    first_day = current_cal = new_cal;
+                }
             }
         }
         free(entries[i]);

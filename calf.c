@@ -51,7 +51,7 @@ struct cal_t* print_html_calendar(struct cal_t *cal){
     char buf[128];
     strftime(buf, 128, "%B %Y", &(cal->date));
     puts(buf);
-    puts("</h3><div class=\"subcalendar\"><table>");
+    puts("</h3><table>");
     if(dow != 0){
         puts("<tr>");
         for(; i < dow; i++) puts("<td></td>");
@@ -78,7 +78,7 @@ struct cal_t* print_html_calendar(struct cal_t *cal){
         for(; dow < 7; dow++) puts("<td></td>");
         puts("</tr>");
     }
-    puts("</table></div></div>");
+    puts("</table></div>");
     return cal;
 }
 

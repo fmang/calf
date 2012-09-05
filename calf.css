@@ -8,7 +8,6 @@ body {
     float: left;
     width: 240px;
     margin: 0 5px;
-    padding: 10px 0;
     text-align: center;
     background-color: #04010f;
     color: #c1cfde;
@@ -24,31 +23,22 @@ body {
 }
 
 .calendar {
-    padding: 5px;
+    padding: 7px;
 }
 .calendar h3 {
     font-size: 1em;
-    padding: 5px;
-    margin: 0;
+    margin: 5px;
     color: #717f9e;
 }
 .calendar:hover h3, .calendar.current h3 {
     color: #d1dfee;
 }
 
-.calendar .subcalendar {
-    overflow: hidden;
+.calendar table, #calendars:hover .calendar.current table {
+    display: none;
 }
-.calendar .subcalendar, #calendars:hover .calendar.current .subcalendar {
-    height: 0;
-    opacity: 0;
-    transition: height 0.2s ease-in, opacity 0.1s ease-in;
-    -moz-transition: height 0.2s ease-in, opacity 0.1s ease-in;
-    -webkit-transition: height 0.2s ease-in, opacity 0.1s ease-in;
-}
-.calendar.current .subcalendar, #calendars .calendar:hover .subcalendar, #calendars .calendar.current:hover .subcalendar {
-    height: 10em;
-    opacity: 1;
+#calendars:hover .calendar:hover table, .calendar.current table {
+    display: table;
 }
 
 table {

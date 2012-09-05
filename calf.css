@@ -11,20 +11,12 @@ body {
     text-align: center;
     background-color: #04010f;
     color: #c1cfde;
-    display: box;
-    display: -moz-box;
-    display: -webkit-box;
-    box-orient: vertical;
-    -moz-box-orient: vertical;
-    -webkit-box-orient: vertical;
-    box-direction: reverse;
-    -moz-box-direction: reverse;
-    -webkit-box-direction: reverse;
 }
 
 .calendar {
     padding: 7px;
 }
+
 .calendar h3 {
     font-size: 1em;
     margin: 5px;
@@ -46,10 +38,6 @@ table {
     empty-cells: hide;
     width: 220px;
     height: 10em;
-}
-
-td {
-    text-align: center;
 }
 
 td a {

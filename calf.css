@@ -6,7 +6,7 @@ body {
 
 #calendars {
     float: left;
-    width: 250px;
+    width: 240px;
     margin: 0 5px;
     padding: 10px 0;
     text-align: center;
@@ -50,11 +50,12 @@ body {
 table {
     margin: auto;
     empty-cells: hide;
+    width: 220px;
+    height: 10em;
 }
 
 td {
     text-align: center;
-    padding: 5px;
 }
 
 td a {
@@ -69,7 +70,7 @@ td.current { background-color: #030333; }
 #listing {
     background-color: #929cd9;
     color: #010211;
-    margin: 15px 5px 15px 270px;
+    margin: 15px 5px 15px 260px;
 }
 
 #listing a {

@@ -36,15 +36,19 @@ body {
     color: #d1dfee;
 }
 
-.calendar .subcalendar { overflow: hidden; }
+.calendar .subcalendar {
+    overflow: hidden;
+}
 .calendar .subcalendar, #calendars:hover .calendar.current .subcalendar {
     height: 0;
     opacity: 0;
+    transition: height 0.2s ease-in, opacity 0.1s ease-in;
+    -moz-transition: height 0.2s ease-in, opacity 0.1s ease-in;
+    -webkit-transition: height 0.2s ease-in, opacity 0.1s ease-in;
 }
 .calendar.current .subcalendar, #calendars .calendar:hover .subcalendar, #calendars .calendar.current:hover .subcalendar {
-    height: inherit;
+    height: 10em;
     opacity: 1;
-    -webkit-transition: opacity 0.3s ease-in;
 }
 
 table {

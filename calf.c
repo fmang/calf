@@ -137,7 +137,7 @@ int main(int argc, char **argv){
                     "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">"
                 "</head>"
                 "<body>"
-                    "<h1>Oh noes, I can't find your file.</h1>"
+                    "<h1>404 Not Found</h1>"
                 "</body>"
             "</html>"
         );
@@ -223,27 +223,15 @@ int main(int argc, char **argv){
             if(stat(path, &st) == 0){
                 puts("<span class=\"size\">");
                 if(S_ISDIR(st.st_mode))
-                    puts("This is a directory");
-                else if(st.st_size < 1024) // < 1k
-                    puts("Not even a kilobyte, yay!");
-                else if(st.st_size <= 9000) // 1k - 9k
-                    puts("A few kilos. Watch over your disk space!");
-                else if(st.st_size <= 20000) // 9k - 20k
-                    puts("OVER 9000 BYTES");
-                else if(st.st_size <= 700000) // 20k - 700k
-                    printf("%lu kilos", st.st_size/1024);
-                else if(st.st_size <= 2*1024*1024) // 700k - 2M
-                    puts("About a meg or two");
-                else if(st.st_size <= 10*1024*1024) // 2M - 10M
-                    printf("%lu little megs", st.st_size/(1024*1024));
-                else if(st.st_size <= 200000000) // 10M - 200M
-                    printf("%lu megs. Getting big :o", st.st_size/(1024*1024));
-                else if(st.st_size <= 900000000) // 200M - 900M
-                    printf("%lu megs. Please don't hurt my bandwidth. I like my bandwidth :(", st.st_size/(1024*1024));
-                else if(st.st_size <= (long unsigned int) 2*1024*1024*1024) // 900M - 2G
-                    puts("A gig or two. You won't get away with this!");
+                    fputs("[DIR]", stdout);
+                else if(st.st_size < 1024)
+                    printf("%lu B", st.st_size);
+                else if(st.st_size < 1024*1024)
+                    printf("%lu KB", st.st_size/1024);
+                else if(st.st_size < 1024*1024)
+                    printf("%lu MB", st.st_size/(1024*1024));
                 else
-                    printf("%lu gigs. DON'T TOUCH IT!", st.st_size/(1024*1024*1024));
+                    printf("%lu GB", st.st_size/(1024*1024*1024));
                 puts("</span>");
             }
             print_escaped(entries[i]->d_name);
@@ -254,9 +242,9 @@ int main(int argc, char **argv){
         if(path) free(path);
     }
     else if(entry_count < 0)
-        puts("<span>And not a single fuck was given that day.</span>");
-    else if(entry_count == 0)
-        puts("<span>Lol, you thought something happened that day?</span>");
+        puts("<span>Nothing.</span>");
+    else if(entry_count <= 0)
+        puts("<span>Well&hellip;</span>");
     free(entries);
     puts("</div><div style=\"clear:both;\"></div>");
 

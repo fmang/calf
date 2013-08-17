@@ -233,7 +233,7 @@ int process(){
                     printf("%lu B", st.st_size);
                 else if(st.st_size < 1024*1024)
                     printf("%lu KB", st.st_size/1024);
-                else if(st.st_size < 1024*1024)
+                else if(st.st_size < 1024*1024*1024)
                     printf("%lu MB", st.st_size/(1024*1024));
                 else
                     printf("%lu GB", st.st_size/(1024*1024*1024));

@@ -14,7 +14,7 @@ struct cal_t {
 };
 
 struct tm current_date;
-const char *root;
+const char *base_uri;
 
 void free_cal(struct cal_t *cur){
     struct cal_t *next;
@@ -65,7 +65,7 @@ struct cal_t* print_html_calendar(struct cal_t *cal){
         if(cal){
             if(cal->date.tm_mday == day){
                 strftime(buf, 128, "%F", &(cal->date));
-                printf("<a href=\"%s/%s\">%d</a>", root, buf, day);
+                printf("<a href=\"%s/%s\">%d</a>", base_uri, buf, day);
                 cal = cal->next;
             }
             else printf("%d", day);
@@ -84,9 +84,9 @@ struct cal_t* print_html_calendar(struct cal_t *cal){
 
 int set_current_date(){
     const char *uri = getenv("DOCUMENT_URI");
-    if(strncmp(root, uri, strlen(root)) != 0)
+    if(strncmp(base_uri, uri, strlen(base_uri)) != 0)
         return 0;
-    uri += strlen(root);
+    uri += strlen(base_uri);
     char *pos;
     if((pos = strptime(uri, "/%F", &current_date))){
         if(*pos == '\0' || strcmp(pos, "/") == 0)
@@ -128,9 +128,8 @@ int process(){
     }
     chdir(doc_root);
 
-    /* the word root is awkward here */
-    root = getenv("CALF_URI");
-    if(!root) root = "";
+    base_uri = getenv("CALF_URI");
+    if(!base_uri) base_uri = "";
     if(!set_current_date()){
         puts(
             "Content-Type: text/html\n"
@@ -166,7 +165,7 @@ int process(){
             "</head>"
             "<body>"
                 "<div id=\"main\">",
-        buf, title, root
+        buf, title, base_uri
     );
 
     struct dirent **entries;
@@ -223,7 +222,7 @@ int process(){
             strncpy(path, buf, 10);
             path[10] = '/';
             strcpy(path+11, entries[i]->d_name);
-            printf("<a href=\"%s/%s/", root, buf);
+            printf("<a href=\"%s/%s/", base_uri, buf);
             print_escaped(entries[i]->d_name);
             printf("\">");
             if(stat(path, &st) == 0){

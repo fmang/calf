@@ -6,6 +6,7 @@
 #include <unistd.h>
 #define __USE_XOPEN
 #include <time.h>
+#include <fcgi_stdio.h>
 
 struct cal_t {
     struct tm date;
@@ -115,7 +116,7 @@ void print_escaped(const char *str){
     }
 }
 
-int main(int argc, char **argv){
+int process(){
 
     if(!getenv("CALF_ROOT")){
         fputs("No CALF_ROOT set.\n", stderr);
@@ -256,4 +257,12 @@ int main(int argc, char **argv){
 
     return EXIT_SUCCESS;
 
+}
+
+int main(int argc, char **argv){
+    while(!FCGI_Accept()){
+        FCGI_SetExitStatus(process());
+        FCGI_Finish();
+    }
+    return EXIT_SUCCESS;
 }

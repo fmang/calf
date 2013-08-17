@@ -118,12 +118,17 @@ void print_escaped(const char *str){
 
 int process(){
 
-    if(!getenv("CALF_ROOT")){
-        fputs("No CALF_ROOT set.\n", stderr);
-        return EXIT_FAILURE;
+    const char *doc_root = getenv("CALF_ROOT");
+    if(!doc_root){
+        doc_root = getenv("DOCUMENT_ROOT");
+        if(!doc_root){
+            fputs("No CALF_ROOT or DOCUMENT_ROOT set.\n", stderr);
+            return EXIT_FAILURE;
+        }
     }
-    chdir(getenv("CALF_ROOT"));
+    chdir(doc_root);
 
+    /* the word root is awkward here */
     root = getenv("CALF_URI");
     if(!root) root = "";
     if(!set_current_date()){

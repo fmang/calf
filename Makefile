@@ -1,5 +1,5 @@
 CFLAGS=-Wall
-LDFLAGS=-lfcgi
+LDFLAGS=-lfcgi -lsystemd-daemon
 
 all: calf
 

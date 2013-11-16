@@ -4,7 +4,9 @@
 #include <dirent.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#ifdef HAVE_SYSTEMD
 #include <systemd/sd-daemon.h>
+#endif
 #define __USE_XOPEN
 #include <time.h>
 #include <fcgi_stdio.h>
@@ -265,8 +267,10 @@ int process(){
 }
 
 int main(int argc, char **argv){
+#ifdef HAVE_SYSTEMD
     if(sd_listen_fds(0) >= 1)
         dup2(SD_LISTEN_FDS_START, 0);
+#endif
     while(!FCGI_Accept()){
         FCGI_SetExitStatus(process());
         FCGI_Finish();

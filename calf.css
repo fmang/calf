@@ -1,48 +1,48 @@
 body {
-    background-color: #1f3370;
+	background-color: #1f3370;
 }
 
 /* Calendar */
 
 #calendars {
-    float: left;
-    width: 240px;
-    margin: 0 5px;
-    text-align: center;
-    background-color: #04010f;
-    color: #c1cfde;
+	float: left;
+	width: 240px;
+	margin: 0 5px;
+	text-align: center;
+	background-color: #04010f;
+	color: #c1cfde;
 }
 
 .calendar {
-    padding: 7px;
+	padding: 7px;
 }
 
 .calendar h3 {
-    font-size: 1em;
-    margin: 5px;
-    color: #717f9e;
+	font-size: 1em;
+	margin: 5px;
+	color: #717f9e;
 }
 .calendar:hover h3, .calendar.current h3 {
-    color: #d1dfee;
+	color: #d1dfee;
 }
 
 .calendar table, #calendars:hover .calendar.current table {
-    display: none;
+	display: none;
 }
 #calendars:hover .calendar:hover table, .calendar.current table {
-    display: table;
+	display: table;
 }
 
 table {
-    margin: auto;
-    empty-cells: hide;
-    width: 220px;
-    height: 10em;
+	margin: auto;
+	empty-cells: hide;
+	width: 220px;
+	height: 10em;
 }
 
 td a {
-    color: #0c40ad;
-    text-decoration: none;
+	color: #0c40ad;
+	text-decoration: none;
 }
 td:hover { background-color: #050544; }
 td.current { background-color: #030333; }
@@ -50,49 +50,49 @@ td.current { background-color: #030333; }
 /* File listing */
 
 #listing {
-    background-color: #929cd9;
-    color: #010211;
-    margin: 15px 5px 15px 260px;
+	background-color: #929cd9;
+	color: #010211;
+	margin: 15px 5px 15px 260px;
 }
 
 #listing a {
-    color: #000312;
-    text-decoration: none;
+	color: #000312;
+	text-decoration: none;
 }
 
 #listing a:hover {
-    color: #0d4f74;
+	color: #0d4f74;
 }
 
 h2 {
-    margin: 0;
-    padding: 15px;
-    font-size: 1.7em;
-    font-weight: 100;
+	margin: 0;
+	padding: 15px;
+	font-size: 1.7em;
+	font-weight: 100;
 }
 
 #listing span {
-    display: block;
-    padding: 0 15px 15px;
+	display: block;
+	padding: 0 15px 15px;
 }
 
 ul {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
 }
 
 li a {
-    display: block;
-    padding: 7px 0 7px 18px;
+	display: block;
+	padding: 7px 0 7px 18px;
 }
 
 li:nth-child(odd){
-    background: #8992d5;
+	background: #8992d5;
 }
 
 li .size {
-    float: right;
-    margin-top: 2px;
-    font-size: 0.8em;
+	float: right;
+	margin-top: 2px;
+	font-size: 0.8em;
 }

@@ -4,12 +4,14 @@
 #include <dirent.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#ifdef HAVE_LIBFCGI
+#include <fcgi_stdio.h>
 #ifdef HAVE_SYSTEMD
 #include <systemd/sd-daemon.h>
 #endif
+#endif
 #define __USE_XOPEN
 #include <time.h>
-#include <fcgi_stdio.h>
 
 struct cal_t {
 	struct tm date;
@@ -276,6 +278,7 @@ int process()
 
 int main(int argc, char **argv)
 {
+#ifdef HAVE_FCGI
 #ifdef HAVE_SYSTEMD
 	if(sd_listen_fds(0) >= 1)
 		dup2(SD_LISTEN_FDS_START, 0);
@@ -285,4 +288,7 @@ int main(int argc, char **argv)
 		FCGI_Finish();
 	}
 	return EXIT_SUCCESS;
+#else
+	return process();
+#endif
 }

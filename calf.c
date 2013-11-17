@@ -1,22 +1,9 @@
+#include "calf.h"
 #include <stdlib.h>
-#include <stdio.h>
 #include <string.h>
 #include <dirent.h>
 #include <sys/stat.h>
 #include <unistd.h>
-#ifdef HAVE_LIBFCGI
-#include <fcgi_stdio.h>
-#ifdef HAVE_SYSTEMD
-#include <systemd/sd-daemon.h>
-#endif
-#endif
-#define __USE_XOPEN
-#include <time.h>
-
-struct cal_t {
-	struct tm date;
-	struct cal_t *next;
-};
 
 struct tm current_date;
 const char *base_uri;
@@ -29,69 +16,6 @@ void free_cal(struct cal_t *cur)
 		free(cur);
 		cur = next;
 	}
-}
-
-int is_leap_year(struct tm *date)
-{
-	if(date->tm_year % 400 == 0) return 1;
-	if(date->tm_year % 100 == 0) return 0;
-	if(date->tm_year % 4 == 0) return 1;
-	return 0;
-}
-
-int days_for_month(struct tm *date)
-{
-	int month = date->tm_mon + 1;
-	if(month == 2) return is_leap_year(date) ? 29 : 28;
-	if(month == 4 || month == 6 || month == 9 || month == 11) return 30;
-	return 31;
-}
-
-struct cal_t* print_html_calendar(struct cal_t *cal)
-{
-	int year = cal->date.tm_year, month = cal->date.tm_mon;
-	int dow = (cal->date.tm_wday - cal->date.tm_mday + 7*5)%7;
-	int day = 1, last_day = days_for_month(&(cal->date));
-	int i = 0;
-	fputs("<div class=\"calendar", stdout);
-	if(year == current_date.tm_year && month == current_date.tm_mon)
-		fputs(" current", stdout);
-	puts("\"><h3>");
-	char buf[128];
-	strftime(buf, 128, "%B %Y", &(cal->date));
-	puts(buf);
-	puts("</h3><table>");
-	if(dow != 0) {
-		puts("<tr>");
-		for(; i < dow; i++) puts("<td></td>");
-	}
-	for(; day <= last_day; day++, dow = (dow+1)%7) {
-		if(dow == 0)
-			puts("<tr>");
-		puts(year == current_date.tm_year
-		     && month == current_date.tm_mon
-		     && day == current_date.tm_mday
-		     ? "<td class=\"current\">" : "<td>");
-		if(cal) {
-			if(cal->date.tm_mday == day) {
-				strftime(buf, 128, "%F", &(cal->date));
-				printf("<a href=\"%s/%s\">%d</a>", base_uri, buf, day);
-				cal = cal->next;
-			} else printf("%d", day);
-		} else {
-			printf("%d", day);
-		}
-		puts("</td>");
-		if(dow == 6)
-			puts("</tr>");
-	}
-	if(dow != 0) {
-		for(; dow < 7; dow++)
-			puts("<td></td>");
-		puts("</tr>");
-	}
-	puts("</table></div>");
-	return cal;
 }
 
 int set_current_date()
@@ -118,21 +42,8 @@ int is_visible(const struct dirent *entry)
 	return entry->d_name[0] != '.';
 }
 
-void print_escaped(const char *str)
-{
-	while(*str) {
-		if(*str == '"') fputs("&quot;", stdout);
-		else if(*str == '&') fputs("&amp;", stdout);
-		else if(*str == '<') fputs("&lt;", stdout);
-		else if(*str == '>') fputs("&gt;", stdout);
-		else putchar(*str);
-		str++;
-	}
-}
-
 int process()
 {
-
 	const char *doc_root = getenv("CALF_ROOT");
 	if(!doc_root) {
 		doc_root = getenv("DOCUMENT_ROOT");
@@ -217,7 +128,7 @@ int process()
 	puts("<div id=\"calendars\">");
 	struct cal_t *current_day = first_day;
 	while(current_day)
-		current_day = print_html_calendar(current_day);
+		current_day = html_calendar(current_day);
 	puts("</div>");
 	free_cal(first_day);
 
@@ -236,7 +147,7 @@ int process()
 			path[10] = '/';
 			strcpy(path+11, entries[i]->d_name);
 			printf("<a href=\"%s/%s/", base_uri, buf);
-			print_escaped(entries[i]->d_name);
+			html_escape(entries[i]->d_name);
 			printf("\">");
 			if(stat(path, &st) == 0) {
 				puts("<span class=\"size\">");
@@ -252,7 +163,7 @@ int process()
 					printf("%lu GB", st.st_size/(1024*1024*1024));
 				puts("</span>");
 			}
-			print_escaped(entries[i]->d_name);
+			html_escape(entries[i]->d_name);
 			puts("</a></li>");
 			free(entries[i]);
 		}

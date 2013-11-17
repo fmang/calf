@@ -24,3 +24,4 @@ extern const char *base_uri;
 
 void html_escape(const char *str);
 struct cal_t* html_calendar(struct cal_t *cal);
+void html_404();

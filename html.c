@@ -1,4 +1,5 @@
 #include "calf.h"
+#include "snips.h"
 
 static int is_leap_year(struct tm *date)
 {
@@ -73,4 +74,9 @@ struct cal_t* html_calendar(struct cal_t *cal)
 	}
 	puts("</table></div>");
 	return cal;
+}
+
+void html_404()
+{
+	puts(snip_html_404);
 }

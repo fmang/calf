@@ -1,4 +1,5 @@
 calf
+snips.h
 
 *.o
 *.sw?

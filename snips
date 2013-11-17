@@ -1,0 +1,12 @@
+@ html_404
+
+<!doctype html>
+<html>
+	<head>
+		<title>404 Not Found</title>
+		<meta charset="utf-8" />
+	</head>
+	<body>
+		<h1>404 Not Found</h1>
+	</body>
+</html>

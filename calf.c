@@ -61,17 +61,8 @@ int process()
 		    "Content-Type: text/html\n"
 		    "Status: 404 Not Found\n"
 		    "\n"
-		    "<!doctype html>"
-		    "<html>"
-		    "<head>"
-		    "<title>404 Not Found</title>"
-		    "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">"
-		    "</head>"
-		    "<body>"
-		    "<h1>404 Not Found</h1>"
-		    "</body>"
-		    "</html>"
 		);
+		html_404();
 		return EXIT_SUCCESS;
 	}
 

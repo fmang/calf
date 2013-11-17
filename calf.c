@@ -70,20 +70,12 @@ int process()
 	if(!title) title = "Calf";
 	char buf[128];
 	strftime(buf, 128, "%B %-d, %Y", &current_date);
-	printf(
+	puts(
 	    "Content-Type: text/html\n"
+	    "Status: 200 OK\n"
 	    "\n"
-	    "<!doctype html>"
-	    "<html>"
-	    "<head>"
-	    "<title>%s - %s</title>"
-	    "<link rel=\"stylesheet\" type=\"text/css\" href=\"%s/calf.css\" />"
-	    "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">"
-	    "</head>"
-	    "<body>"
-	    "<div id=\"main\">",
-	    buf, title, base_uri
 	);
+	html_header(title, base_uri, buf);
 
 	struct dirent **entries;
 	int entry_count = scandir(".", &entries, is_visible, alphasort);
@@ -168,11 +160,7 @@ int process()
 	free(entries);
 	puts("</div><div style=\"clear:both;\"></div>");
 
-	puts(
-	    "</div>"
-	    "</body>"
-	    "</html>"
-	);
+	html_footer();
 
 	return EXIT_SUCCESS;
 

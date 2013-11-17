@@ -78,5 +78,15 @@ struct cal_t* html_calendar(struct cal_t *cal)
 
 void html_404()
 {
-	puts(snip_html_404);
+	puts(snip_404);
+}
+
+void html_header(const char *title, const char *base_uri, const char *date)
+{
+	printf(snip_header, date, title, base_uri);
+}
+
+void html_footer()
+{
+	puts(snip_footer);
 }

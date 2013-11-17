@@ -1,5 +1,4 @@
-@ html_404
-
+@ 404
 <!doctype html>
 <html>
 	<head>
@@ -8,5 +7,20 @@
 	</head>
 	<body>
 		<h1>404 Not Found</h1>
+	</body>
+</html>
+
+@header
+<!doctype html>
+<html>
+	<head>
+		<title>%s - %s</title>
+		<link rel="stylesheet" type="text/css" href="%s/calf.css" />
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	</head>
+	<body>
+		<div id="main">
+@footer
+		</div>
 	</body>
 </html>

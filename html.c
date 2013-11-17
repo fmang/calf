@@ -51,7 +51,7 @@ static int next_mday(struct tm *date)
 	return 0;
 }
 
-void html_cal(int year, int month)
+void html_cal(int year, int month, int day)
 {
 	struct tm date = {
 		.tm_mday = 1,
@@ -69,7 +69,10 @@ void html_cal(int year, int month)
 			for (int i = 0; i < dow; i++)
 				put(snip_calendar_empty_cell);
 		}
-		tput(snip_calendar_regular_day, &date);
+		if (date.tm_mday == day)
+			tput(snip_calendar_current_day, &date);
+		else
+			tput(snip_calendar_regular_day, &date);
 		if (date.tm_wday == 0)
 			tput(snip_calendar_week_end, &date);
 	} while (next_mday(&date) == 0);

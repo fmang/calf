@@ -41,12 +41,44 @@ static int days_for_month(struct tm *date)
 	return 31;
 }
 
+static int next_mday(struct tm *date)
+{
+	if (date->tm_mday >= days_for_month(date))
+		return -1;
+	date->tm_mday++;
+	date->tm_wday = (date->tm_wday + 1) % 7;
+	date->tm_yday++;
+	return 0;
+}
+
 void html_cal(int year, int month)
 {
-	struct tm date;
-	date.tm_mon = month - 1;
-	date.tm_year = year - 1900;
+	struct tm date = {
+		.tm_mday = 1,
+		.tm_mon  = month - 1,
+		.tm_year = year - 1900,
+	};
+	if (mktime(&date) == -1)
+		return;
 	tput(snip_calendar_header, &date);
+	do {
+		if (date.tm_wday == 1 || date.tm_mday == 1)
+			tput(snip_calendar_week, &date);
+		if (date.tm_mday == 1) {
+			int dow = (date.tm_wday + 6) % 7;
+			for (int i = 0; i < dow; i++)
+				put(snip_calendar_empty_cell);
+		}
+		tput(snip_calendar_regular_day, &date);
+		if (date.tm_wday == 0)
+			tput(snip_calendar_week_end, &date);
+	} while (next_mday(&date) == 0);
+	if (date.tm_wday != 0) {
+		int dow = date.tm_wday - 1;
+		for (int i = 0; i < 6 - dow; i++)
+			put(snip_calendar_empty_cell);
+		tput(snip_calendar_week_end, &date);
+	}
 	tput(snip_calendar_footer, &date);
 }
 

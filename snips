@@ -36,10 +36,10 @@
 @calendar regular day
 			<td>%-d</td>
 @calendar linked day
-			<td><a href="/%F">%-d</a></td>
+			<td><a href="/%F/">%-d</a></td>
 @calendar current day
 			<td class="current">%-d</td>
-@calender week end
+@calendar week end
 		</tr>
 @calendar footer
 	</table>

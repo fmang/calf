@@ -51,7 +51,7 @@ static int next_mday(struct tm *date)
 	return 0;
 }
 
-void html_cal(int year, int month, int day)
+void html_cal(int year, int month, int day, uint32_t links)
 {
 	struct tm date = {
 		.tm_mday = 1,
@@ -71,6 +71,8 @@ void html_cal(int year, int month, int day)
 		}
 		if (date.tm_mday == day)
 			tput(snip_calendar_current_day, &date);
+		else if (links & (1 << (date.tm_mday - 1)))
+			tput(snip_calendar_linked_day, &date);
 		else
 			tput(snip_calendar_regular_day, &date);
 		if (date.tm_wday == 0)

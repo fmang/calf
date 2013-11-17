@@ -11,6 +11,8 @@
 #  include <stdio.h>
 #endif
 
+#include <stdint.h>
+
 #define __USE_XOPEN
 #include <time.h>
 

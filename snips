@@ -1,4 +1,4 @@
-@ 404
+@404
 <!doctype html>
 <html>
 	<head>
@@ -24,3 +24,23 @@
 		</div>
 	</body>
 </html>
+
+@calendar header
+<div class="calendar">
+	<h3>%B %Y</h3>
+	<table>
+@calendar week
+		<tr>
+@calendar empty cell
+			<td></td>
+@calendar regular day
+			<td>%-d</td>
+@calendar linked day
+			<td><a href="/%F">%-d</a></td>
+@calendar current day
+			<td class="current">%-d</td>
+@calender week end
+		</tr>
+@calendar footer
+	</table>
+</div>

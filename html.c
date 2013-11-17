@@ -1,6 +1,30 @@
 #include "calf.h"
 #include "snips.h"
 
+int put(const char *str)
+{
+	return fputs(str, stdout);
+}
+
+int tput(const char *format, struct tm *date)
+{
+	static char buffer[512];
+	strftime(buffer, 512, format, date);
+	return put(buffer);
+}
+
+void html_escape(const char *str)
+{
+	while(*str) {
+		if(*str == '"') fputs("&quot;", stdout);
+		else if(*str == '&') fputs("&amp;", stdout);
+		else if(*str == '<') fputs("&lt;", stdout);
+		else if(*str == '>') fputs("&gt;", stdout);
+		else putchar(*str);
+		str++;
+	}
+}
+
 static int is_leap_year(struct tm *date)
 {
 	if(date->tm_year % 400 == 0) return 1;
@@ -17,16 +41,13 @@ static int days_for_month(struct tm *date)
 	return 31;
 }
 
-void html_escape(const char *str)
+void html_cal(int year, int month)
 {
-	while(*str) {
-		if(*str == '"') fputs("&quot;", stdout);
-		else if(*str == '&') fputs("&amp;", stdout);
-		else if(*str == '<') fputs("&lt;", stdout);
-		else if(*str == '>') fputs("&gt;", stdout);
-		else putchar(*str);
-		str++;
-	}
+	struct tm date;
+	date.tm_mon = month - 1;
+	date.tm_year = year - 1900;
+	tput(snip_calendar_header, &date);
+	tput(snip_calendar_footer, &date);
 }
 
 struct cal_t* html_calendar(struct cal_t *cal)
@@ -78,7 +99,7 @@ struct cal_t* html_calendar(struct cal_t *cal)
 
 void html_404()
 {
-	puts(snip_404);
+	put(snip_404);
 }
 
 void html_header(const char *title, const char *base_uri, const char *date)
@@ -88,5 +109,5 @@ void html_header(const char *title, const char *base_uri, const char *date)
 
 void html_footer()
 {
-	puts(snip_footer);
+	put(snip_footer);
 }

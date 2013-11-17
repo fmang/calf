@@ -4,7 +4,9 @@
 
 # Anchors
 /^@/ {
-	s/^@\s*\(.*\)$/; const char *snip_\1 =/p
+	s/^@\s*//
+	s/ /_/g
+	s/^.*$/; const char *snip_& =/p
 	d
 }
 $ a ;

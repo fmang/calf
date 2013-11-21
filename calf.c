@@ -64,9 +64,9 @@ struct calendar *scan()
 		strftime(buffer, 32, "%F", &date);
 		if (strcmp(entries[i]->d_name, buffer))
 			continue;
-		if (!cal || cal->year != 1900 + date.tm_year) {
+		if (!cal || cal->year != date.tm_year) {
 			new_cal = calloc(1, sizeof(*new_cal));
-			new_cal->year = 1900 + date.tm_year;
+			new_cal->year = date.tm_year;
 			new_cal->next = cal;
 			cal = new_cal;
 		}
@@ -80,14 +80,14 @@ void display_calendars(struct calendar *cal)
 {
 	puts("<div id=\"calendars\">");
 	for (; cal; cal = cal->next) {
-		int current_year = cal->year == 1900 + current_date.tm_year;
+		int current_year = cal->year == current_date.tm_year;
 		for (int i = 0; i < 12; i++) {
 			int day = 0;
 			if (current_year && i == current_date.tm_mon)
 				day = current_date.tm_mday;
 			if (cal->months[i] == 0)
 				continue;
-			html_cal(cal->year, i + 1, day, cal->months[i]);
+			html_cal(cal->year, i, day, cal->months[i]);
 		}
 	}
 	puts("</div>");

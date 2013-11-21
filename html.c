@@ -63,8 +63,8 @@ void html_cal(int year, int month, int day, uint32_t links)
 {
 	struct tm date = {
 		.tm_mday = 1,
-		.tm_mon  = month - 1,
-		.tm_year = year - 1900,
+		.tm_mon  = month,
+		.tm_year = year,
 	};
 	if (mktime(&date) == -1)
 		return;

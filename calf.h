@@ -13,7 +13,7 @@
 
 #include <stdint.h>
 
-#define __USE_XOPEN
+#define __USE_XOPEN /* for strptime */
 #include <time.h>
 
 struct calendar {

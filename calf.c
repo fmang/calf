@@ -180,12 +180,12 @@ int process()
 		}
 		puts("</ul>");
 		if (path) free(path);
+		free(entries);
 	} else if (entry_count < 0) {
 		puts("<span>Nothing.</span>");
 	} else if (entry_count <= 0) {
 		puts("<span>Well&hellip;</span>");
 	}
-	free(entries);
 	puts("</div><div style=\"clear:both;\"></div>");
 
 	html_footer();

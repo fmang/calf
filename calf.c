@@ -8,16 +8,6 @@
 struct tm current_date;
 const char *base_uri;
 
-void free_cal(struct cal_t *cur)
-{
-	struct cal_t *next;
-	while (cur) {
-		next = cur->next;
-		free(cur);
-		cur = next;
-	}
-}
-
 int set_current_date()
 {
 	const char *uri = getenv("DOCUMENT_URI");
@@ -41,12 +31,6 @@ int is_visible(const struct dirent *entry)
 {
 	return entry->d_name[0] != '.';
 }
-
-struct calendar {
-	int year;
-	uint32_t months[12];
-	struct calendar *next;
-};
 
 struct calendar *scan()
 {
@@ -74,23 +58,6 @@ struct calendar *scan()
 	}
 	free(entries);
 	return cal;
-}
-
-void display_calendars(struct calendar *cal)
-{
-	puts("<div id=\"calendars\">");
-	for (; cal; cal = cal->next) {
-		int current_year = cal->year == current_date.tm_year;
-		for (int i = 0; i < 12; i++) {
-			int day = 0;
-			if (current_year && i == current_date.tm_mon)
-				day = current_date.tm_mday;
-			if (cal->months[i] == 0)
-				continue;
-			html_cal(cal->year, i, day, cal->months[i]);
-		}
-	}
-	puts("</div>");
 }
 
 void free_calendars(struct calendar *cal)
@@ -139,7 +106,7 @@ int process()
 	html_header(title, base_uri, buf);
 
 	struct calendar *cal = scan();
-	display_calendars(cal);
+	html_calendars(cal);
 	free_calendars(cal);
 
 	puts("<div id=\"listing\">");

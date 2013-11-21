@@ -59,7 +59,7 @@ static int next_mday(struct tm *date)
 	return 0;
 }
 
-void html_cal(int year, int month, int day, uint32_t links)
+static void format_calendar(int year, int month, int day, uint32_t links)
 {
 	struct tm date = {
 		.tm_mday = 1,
@@ -95,54 +95,21 @@ void html_cal(int year, int month, int day, uint32_t links)
 	printft(snip_calendar_footer, &date);
 }
 
-struct cal_t* html_calendar(struct cal_t *cal)
+void html_calendars(struct calendar *cal)
 {
-	int year = cal->date.tm_year, month = cal->date.tm_mon;
-	int dow = (cal->date.tm_wday - cal->date.tm_mday + 7*5)%7;
-	int day = 1, last_day = days_for_month(&(cal->date));
-	int i = 0;
-	fputs("<div class=\"calendar", stdout);
-	if (year == current_date.tm_year && month == current_date.tm_mon)
-		fputs(" current", stdout);
-	puts("\"><h3>");
-	char buf[128];
-	strftime(buf, 128, "%B %Y", &(cal->date));
-	puts(buf);
-	puts("</h3><table>");
-	if (dow != 0) {
-		puts("<tr>");
-		for (; i < dow; i++)
-			puts("<td></td>");
-	}
-	for (; day <= last_day; day++, dow = (dow+1)%7) {
-		if (dow == 0)
-			puts("<tr>");
-		puts(year == current_date.tm_year
-		     && month == current_date.tm_mon
-		     && day == current_date.tm_mday
-		     ? "<td class=\"current\">" : "<td>");
-		if (cal) {
-			if (cal->date.tm_mday == day) {
-				strftime(buf, 128, "%F", &(cal->date));
-				printf("<a href=\"%s/%s\">%d</a>", base_uri, buf, day);
-				cal = cal->next;
-			} else {
-				printf("%d", day);
-			}
-		} else {
-			printf("%d", day);
+	put(snip_calendars_header);
+	for (; cal; cal = cal->next) {
+		int current_year = cal->year == current_date.tm_year;
+		for (int i = 0; i < 12; i++) {
+			int day = 0;
+			if (current_year && i == current_date.tm_mon)
+				day = current_date.tm_mday;
+			if (cal->months[i] == 0)
+				continue;
+			format_calendar(cal->year, i, day, cal->months[i]);
 		}
-		puts("</td>");
-		if (dow == 6)
-			puts("</tr>");
 	}
-	if (dow != 0) {
-		for (; dow < 7; dow++)
-			puts("<td></td>");
-		puts("</tr>");
-	}
-	puts("</table></div>");
-	return cal;
+	put(snip_calendars_footer);
 }
 
 void html_404()

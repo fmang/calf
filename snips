@@ -16,12 +16,12 @@
 	<head>
 		<title>%s - %s</title>
 		<link rel="stylesheet" type="text/css" href="%s/calf.css" />
-		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<meta charset="utf-8" />
 	</head>
 	<body>
 		<div id="main">
 @footer
-		<div style="clear:both;"></div>
+			<div style="clear:both;"></div>
 		</div>
 	</body>
 </html>

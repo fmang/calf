@@ -1,5 +1,5 @@
 #include "calf.h"
-#include "snips.h"
+#include "htmlsnips.h"
 #include <stdarg.h>
 #include <stdlib.h>
 

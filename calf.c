@@ -42,6 +42,67 @@ int is_visible(const struct dirent *entry)
 	return entry->d_name[0] != '.';
 }
 
+struct calendar {
+	int year;
+	uint32_t months[12];
+	struct calendar *next;
+};
+
+struct calendar *scan()
+{
+	struct dirent **entries;
+	int entry_count = scandir(".", &entries, is_visible, alphasort);
+	struct tm date;
+	char buffer[32];
+	struct calendar *cal = NULL;
+	struct calendar *new_cal;
+	for (int i = entry_count - 1; i >= 0; free(entries[i]), i--) {
+		/* ^ reverse processing to end up with an ordered list */
+		if (!strptime(entries[i]->d_name, "%F", &date))
+			continue;
+		/* strptime is too lenient, we want to force canonical ISO 8601. */
+		strftime(buffer, 32, "%F", &date);
+		if (strcmp(entries[i]->d_name, buffer))
+			continue;
+		if (!cal || cal->year != 1900 + date.tm_year) {
+			new_cal = calloc(1, sizeof(*new_cal));
+			new_cal->year = 1900 + date.tm_year;
+			new_cal->next = cal;
+			cal = new_cal;
+		}
+		cal->months[date.tm_mon] |= 1 << (date.tm_mday - 1);
+	}
+	free(entries);
+	return cal;
+}
+
+void display_calendars(struct calendar *cal)
+{
+	puts("<div id=\"calendars\">");
+	for (; cal; cal = cal->next) {
+		int current_year = cal->year == 1900 + current_date.tm_year;
+		for (int i = 0; i < 12; i++) {
+			int day = 0;
+			if (current_year && i == current_date.tm_mon)
+				day = current_date.tm_mday;
+			if (cal->months[i] == 0)
+				continue;
+			html_cal(cal->year, i + 1, day, cal->months[i]);
+		}
+	}
+	puts("</div>");
+}
+
+void free_calendars(struct calendar *cal)
+{
+	struct calendar *next;
+	while (cal) {
+		next = cal->next;
+		free(cal);
+		cal = next;
+	}
+}
+
 int process()
 {
 	const char *doc_root = getenv("CALF_ROOT");
@@ -77,54 +138,20 @@ int process()
 	);
 	html_header(title, base_uri, buf);
 
-	struct dirent **entries;
-	int entry_count = scandir(".", &entries, is_visible, alphasort);
-	int i = 0;
-	struct cal_t *first_day = 0, *current_cal = 0, *new_cal;
-	struct tm date;
-	char *pos;
-	for (; i < entry_count; i++) {
-		if ((pos = strptime(entries[i]->d_name, "%F", &date))) {
-			if (*pos == '\0') {
-				new_cal = (struct cal_t*) malloc(sizeof(struct cal_t));
-				memcpy(&(new_cal->date), &date, sizeof(struct tm));
-				if (current_cal) {
-					if (current_cal->date.tm_year == date.tm_year && current_cal->date.tm_mon == date.tm_mon) {
-						new_cal->next = current_cal->next;
-						current_cal->next = new_cal;
-						current_cal = new_cal;
-					} else {
-						new_cal->next = first_day;
-						first_day = current_cal = new_cal;
-					}
-				} else {
-					new_cal->next = 0;
-					first_day = current_cal = new_cal;
-				}
-			}
-		}
-		free(entries[i]);
-	}
-	free(entries);
-	entries = 0;
-
-	puts("<div id=\"calendars\">");
-	html_cal(2013, 10, 5, -1);
-	struct cal_t *current_day = first_day;
-	while (current_day)
-		current_day = html_calendar(current_day);
-	puts("</div>");
-	free_cal(first_day);
+	struct calendar *cal = scan();
+	display_calendars(cal);
+	free_calendars(cal);
 
 	puts("<div id=\"listing\">");
 	printf("<h2>%s</h2>", buf);
 	strftime(buf, 128, "%F", &current_date);
-	entry_count = scandir(buf, &entries, is_visible, alphasort);
+	struct dirent **entries;
+	int entry_count = scandir(buf, &entries, is_visible, alphasort);
 	if (entry_count > 0) {
 		char *path = 0;
 		struct stat st;
 		puts("<ul>");
-		for (i = 0; i < entry_count; i++) {
+		for (int i = 0; i < entry_count; i++) {
 			puts("<li>");
 			path = (char*) realloc(path, strlen(entries[i]->d_name) + 12);
 			strncpy(path, buf, 10);

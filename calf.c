@@ -153,7 +153,7 @@ int process()
 	} else if (entry_count <= 0) {
 		puts("<span>Well&hellip;</span>");
 	}
-	puts("</div><div style=\"clear:both;\"></div>");
+	puts("</div>");
 
 	html_footer();
 

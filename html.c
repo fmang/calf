@@ -3,6 +3,11 @@
 #include <stdarg.h>
 #include <stdlib.h>
 
+/*******************************************************************************
+ * Input/Output.
+ * Formatting.
+ */
+
 static int put(const char *str)
 {
 	return fputs(str, stdout);
@@ -32,6 +37,11 @@ void html_escape(const char *str)
 		str++;
 	}
 }
+
+/*******************************************************************************
+ * Date-related functions.
+ * Calendar generation.
+ */
 
 static int is_leap_year(struct tm *date)
 {
@@ -111,6 +121,10 @@ void html_calendars(struct calendar *cal)
 	}
 	put(snip_calendars_footer);
 }
+
+/*******************************************************************************
+ * Simple fragments.
+ */
 
 void html_404()
 {

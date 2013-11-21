@@ -22,11 +22,15 @@ struct calendar {
 	struct calendar *next;
 };
 
-extern struct tm current_date;
-extern const char *base_uri;
+struct context {
+	struct tm date;
+	const char *base_uri;
+	const char *title;
+	struct calendar *calendars;
+};
 
 void html_escape(const char *str);
-void html_calendars(struct calendar *cal);
+void html_calendars(struct context *ctx);
 void html_404();
-void html_header(const char *title, const char *base_uri, const char *date);
+void html_header(struct context *ctx);
 void html_footer();

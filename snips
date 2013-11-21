@@ -14,7 +14,7 @@
 <!doctype html>
 <html>
 	<head>
-		<title>%s - %s</title>
+		<title>%%B %%-d, %%Y - %s</title>
 		<link rel="stylesheet" type="text/css" href="%s/calf.css" />
 		<meta charset="utf-8" />
 	</head>

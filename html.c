@@ -105,15 +105,15 @@ static void format_calendar(int year, int month, int day, uint32_t links)
 	printft(snip_calendar_footer, &date);
 }
 
-void html_calendars(struct calendar *cal)
+void html_calendars(struct context *ctx)
 {
 	put(snip_calendars_header);
-	for (; cal; cal = cal->next) {
-		int current_year = cal->year == current_date.tm_year;
+	for (struct calendar *cal = ctx->calendars; cal; cal = cal->next) {
+		int current_year = cal->year == ctx->date.tm_year;
 		for (int i = 0; i < 12; i++) {
 			int day = 0;
-			if (current_year && i == current_date.tm_mon)
-				day = current_date.tm_mday;
+			if (current_year && i == ctx->date.tm_mon)
+				day = ctx->date.tm_mday;
 			if (cal->months[i] == 0)
 				continue;
 			format_calendar(cal->year, i, day, cal->months[i]);
@@ -131,9 +131,9 @@ void html_404()
 	put(snip_404);
 }
 
-void html_header(const char *title, const char *base_uri, const char *date)
+void html_header(struct context *ctx)
 {
-	printf(snip_header, date, title, base_uri);
+	printft(snip_header, &ctx->date, ctx->title, ctx->base_uri);
 }
 
 void html_footer()

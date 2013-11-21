@@ -5,23 +5,22 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
-struct tm current_date;
-const char *base_uri;
+struct context ctx;
 
 static int set_current_date()
 {
 	const char *uri = getenv("DOCUMENT_URI");
-	if (strncmp(base_uri, uri, strlen(base_uri)) != 0)
+	if (strncmp(ctx.base_uri, uri, strlen(ctx.base_uri)) != 0)
 		return 0;
-	uri += strlen(base_uri);
+	uri += strlen(ctx.base_uri);
 	char *pos;
-	if ((pos = strptime(uri, "/%F", &current_date))) {
+	if ((pos = strptime(uri, "/%F", &ctx.date))) {
 		if (*pos == '\0' || strcmp(pos, "/") == 0)
 			return 1;
 	} else if (*uri == '\0' || strcmp(uri, "/") == 0) {
 		time_t now;
 		time(&now);
-		memcpy(&current_date, gmtime(&now), sizeof(struct tm));
+		memcpy(&ctx.date, gmtime(&now), sizeof(struct tm));
 		return 1;
 	}
 	return 0;
@@ -73,10 +72,10 @@ static void free_calendars(struct calendar *cal)
 static void listing()
 {
 	char buf[128];
-	strftime(buf, 128, "%B %-d, %Y", &current_date);
+	strftime(buf, 128, "%B %-d, %Y", &ctx.date);
 	puts("<div id=\"listing\">");
 	printf("<h2>%s</h2>", buf);
-	strftime(buf, 128, "%F", &current_date);
+	strftime(buf, 128, "%F", &ctx.date);
 	struct dirent **entries;
 	int entry_count = scandir(buf, &entries, is_visible, alphasort);
 	if (entry_count > 0) {
@@ -89,7 +88,7 @@ static void listing()
 			strncpy(path, buf, 10);
 			path[10] = '/';
 			strcpy(path+11, entries[i]->d_name);
-			printf("<a href=\"%s/%s/", base_uri, buf);
+			printf("<a href=\"%s/%s/", ctx.base_uri, buf);
 			html_escape(entries[i]->d_name);
 			printf("\">");
 			if (stat(path, &st) == 0) {
@@ -132,11 +131,13 @@ static int process()
 	}
 	chdir(doc_root);
 
-	base_uri = getenv("CALF_URI");
-	if (!base_uri) base_uri = "";
+	ctx.base_uri = getenv("CALF_URI");
+	if (!ctx.base_uri)
+		ctx.base_uri = "";
 
-	char *title = getenv("CALF_TITLE");
-	if (!title) title = "Calf";
+	ctx.title = getenv("CALF_TITLE");
+	if (!ctx.title)
+		ctx.title = "Calf";
 
 	if (!set_current_date()) {
 		puts(
@@ -154,13 +155,11 @@ static int process()
 	    "\n"
 	);
 
-	char buf[128];
-	strftime(buf, 128, "%B %-d, %Y", &current_date);
-	html_header(title, base_uri, buf);
+	html_header(&ctx);
 
-	struct calendar *cal = scan();
-	html_calendars(cal);
-	free_calendars(cal);
+	ctx.calendars = scan();
+	html_calendars(&ctx);
+	free_calendars(ctx.calendars);
 
 	listing();
 

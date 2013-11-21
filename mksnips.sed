@@ -6,7 +6,7 @@
 /^@/ {
 	s/^@\s*//
 	s/ /_/g
-	s/^.*$/; const char *snip_& =/p
+	s/^.*$/; static const char *snip_& =/p
 	d
 }
 $ a ;

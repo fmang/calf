@@ -72,6 +72,8 @@ static void free_calendars(struct calendar *cal)
 
 static void listing()
 {
+	char buf[128];
+	strftime(buf, 128, "%B %-d, %Y", &current_date);
 	puts("<div id=\"listing\">");
 	printf("<h2>%s</h2>", buf);
 	strftime(buf, 128, "%F", &current_date);
@@ -124,9 +126,10 @@ static int process()
 	const char *doc_root = getenv("CALF_ROOT");
 	if (!doc_root)
 		doc_root = getenv("DOCUMENT_ROOT");
-	if (!doc_root)
+	if (!doc_root) {
 		fputs("No CALF_ROOT or DOCUMENT_ROOT set.\n", stderr);
 		return EXIT_FAILURE;
+	}
 	chdir(doc_root);
 
 	base_uri = getenv("CALF_URI");

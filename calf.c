@@ -8,7 +8,7 @@
 struct tm current_date;
 const char *base_uri;
 
-int set_current_date()
+static int set_current_date()
 {
 	const char *uri = getenv("DOCUMENT_URI");
 	if (strncmp(base_uri, uri, strlen(base_uri)) != 0)
@@ -27,12 +27,12 @@ int set_current_date()
 	return 0;
 }
 
-int is_visible(const struct dirent *entry)
+static int is_visible(const struct dirent *entry)
 {
 	return entry->d_name[0] != '.';
 }
 
-struct calendar *scan()
+static struct calendar *scan()
 {
 	struct dirent **entries;
 	int entry_count = scandir(".", &entries, is_visible, alphasort);
@@ -60,7 +60,7 @@ struct calendar *scan()
 	return cal;
 }
 
-void free_calendars(struct calendar *cal)
+static void free_calendars(struct calendar *cal)
 {
 	struct calendar *next;
 	while (cal) {
@@ -70,45 +70,8 @@ void free_calendars(struct calendar *cal)
 	}
 }
 
-int process()
+static void listing()
 {
-	const char *doc_root = getenv("CALF_ROOT");
-	if (!doc_root) {
-		doc_root = getenv("DOCUMENT_ROOT");
-		if (!doc_root) {
-			fputs("No CALF_ROOT or DOCUMENT_ROOT set.\n", stderr);
-			return EXIT_FAILURE;
-		}
-	}
-	chdir(doc_root);
-
-	base_uri = getenv("CALF_URI");
-	if (!base_uri) base_uri = "";
-	if (!set_current_date()) {
-		puts(
-		    "Content-Type: text/html\n"
-		    "Status: 404 Not Found\n"
-		    "\n"
-		);
-		html_404();
-		return EXIT_SUCCESS;
-	}
-
-	char *title = getenv("CALF_TITLE");
-	if (!title) title = "Calf";
-	char buf[128];
-	strftime(buf, 128, "%B %-d, %Y", &current_date);
-	puts(
-	    "Content-Type: text/html\n"
-	    "Status: 200 OK\n"
-	    "\n"
-	);
-	html_header(title, base_uri, buf);
-
-	struct calendar *cal = scan();
-	html_calendars(cal);
-	free_calendars(cal);
-
 	puts("<div id=\"listing\">");
 	printf("<h2>%s</h2>", buf);
 	strftime(buf, 128, "%F", &current_date);
@@ -154,6 +117,49 @@ int process()
 		puts("<span>Well&hellip;</span>");
 	}
 	puts("</div>");
+}
+
+static int process()
+{
+	const char *doc_root = getenv("CALF_ROOT");
+	if (!doc_root)
+		doc_root = getenv("DOCUMENT_ROOT");
+	if (!doc_root)
+		fputs("No CALF_ROOT or DOCUMENT_ROOT set.\n", stderr);
+		return EXIT_FAILURE;
+	chdir(doc_root);
+
+	base_uri = getenv("CALF_URI");
+	if (!base_uri) base_uri = "";
+
+	char *title = getenv("CALF_TITLE");
+	if (!title) title = "Calf";
+
+	if (!set_current_date()) {
+		puts(
+		    "Content-Type: text/html\n"
+		    "Status: 404 Not Found\n"
+		    "\n"
+		);
+		html_404();
+		return EXIT_SUCCESS;
+	}
+
+	puts(
+	    "Content-Type: text/html\n"
+	    "Status: 200 OK\n"
+	    "\n"
+	);
+
+	char buf[128];
+	strftime(buf, 128, "%B %-d, %Y", &current_date);
+	html_header(title, base_uri, buf);
+
+	struct calendar *cal = scan();
+	html_calendars(cal);
+	free_calendars(cal);
+
+	listing();
 
 	html_footer();
 

@@ -1,16 +1,24 @@
 #include "calf.h"
 #include "snips.h"
+#include <stdarg.h>
+#include <stdlib.h>
 
-int put(const char *str)
+static int put(const char *str)
 {
 	return fputs(str, stdout);
 }
 
-int tput(const char *format, struct tm *date)
+static int printft(const char *format, struct tm *date, ...)
 {
-	static char buffer[512];
-	strftime(buffer, 512, format, date);
-	return put(buffer);
+	static char *buffer = NULL;
+	if (!buffer)
+		buffer = malloc(4096);
+	va_list ap;
+	va_start(ap, date);
+	vsnprintf(buffer, 2048, format, ap);
+	strftime(buffer + 2048, 2048, buffer, date);
+	va_end(ap);
+	return put(buffer + 2048);
 }
 
 void html_escape(const char *str)
@@ -60,31 +68,31 @@ void html_cal(int year, int month, int day, uint32_t links)
 	};
 	if (mktime(&date) == -1)
 		return;
-	tput(snip_calendar_header, &date);
+	printft(snip_calendar_header, &date);
 	do {
 		if (date.tm_wday == 1 || date.tm_mday == 1)
-			tput(snip_calendar_week, &date);
+			printft(snip_calendar_week, &date);
 		if (date.tm_mday == 1) {
 			int dow = (date.tm_wday + 6) % 7;
 			for (int i = 0; i < dow; i++)
 				put(snip_calendar_empty_cell);
 		}
 		if (date.tm_mday == day)
-			tput(snip_calendar_current_day, &date);
+			printft(snip_calendar_current_day, &date);
 		else if (links & (1 << (date.tm_mday - 1)))
-			tput(snip_calendar_linked_day, &date);
+			printft(snip_calendar_linked_day, &date);
 		else
-			tput(snip_calendar_regular_day, &date);
+			printft(snip_calendar_regular_day, &date);
 		if (date.tm_wday == 0)
-			tput(snip_calendar_week_end, &date);
+			printft(snip_calendar_week_end, &date);
 	} while (next_mday(&date) == 0);
 	if (date.tm_wday != 0) {
 		int dow = date.tm_wday - 1;
 		for (int i = 0; i < 6 - dow; i++)
 			put(snip_calendar_empty_cell);
-		tput(snip_calendar_week_end, &date);
+		printft(snip_calendar_week_end, &date);
 	}
-	tput(snip_calendar_footer, &date);
+	printft(snip_calendar_footer, &date);
 }
 
 struct cal_t* html_calendar(struct cal_t *cal)

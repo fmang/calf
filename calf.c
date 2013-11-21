@@ -109,6 +109,7 @@ int process()
 	entries = 0;
 
 	puts("<div id=\"calendars\">");
+	html_cal(2013, 10, 5, -1);
 	struct cal_t *current_day = first_day;
 	while (current_day)
 		current_day = html_calendar(current_day);

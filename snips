@@ -27,18 +27,18 @@
 
 @calendar header
 <div class="calendar">
-	<h3>%B %Y</h3>
+	<h3>%%B %%Y</h3>
 	<table>
 @calendar week
 		<tr>
 @calendar empty cell
 			<td></td>
 @calendar regular day
-			<td>%-d</td>
+			<td>%%-d</td>
 @calendar linked day
-			<td><a href="/%F/">%-d</a></td>
+			<td><a href="/%%F/">%%-d</a></td>
 @calendar current day
-			<td class="current">%-d</td>
+			<td class="current">%%-d</td>
 @calendar week end
 		</tr>
 @calendar footer

@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <dirent.h>
-#include <sys/stat.h>
 #include <unistd.h>
 
 struct context ctx;
@@ -67,6 +66,37 @@ static void free_calendars(struct calendar *cal)
 		free(cal);
 		cal = next;
 	}
+}
+
+static int list(struct tm *date, struct entry ***entries)
+{
+	char dirpath[128];
+	strftime(dirpath, 128, "%F", &ctx.date);
+	struct dirent **items;
+	int count = scandir(dirpath, &items, is_visible, alphasort);
+	if (count > 0)
+		*entries = calloc(count + 1, sizeof(**entries));
+	else
+		*entries = NULL;
+	for (int i = 0; i < count; i++) {
+		struct entry *entry;
+		entry = malloc(sizeof(*entry));
+		entry->ino = items[i]->d_ino;
+		asprintf(&entry->path, "%s/%s", dirpath, items[i]->d_name);
+		entry->name = entry->path + strlen(dirpath) + 1;
+		stat(entry->path, &entry->st);
+		(*entries)[i] = entry;
+	}
+	return count;
+}
+
+static void free_entries(struct entry **entries, int count)
+{
+	for (int i = 0; i < count; i++) {
+		free(entries[i]->path);
+		free(entries[i]);
+	}
+	free(entries);
 }
 
 static void listing()

@@ -90,64 +90,51 @@ static int list(struct tm *date, struct entry ***entries)
 	return count;
 }
 
-static void free_entries(struct entry **entries, int count)
+static void free_entries(struct entry **entries)
 {
-	for (int i = 0; i < count; i++) {
-		free(entries[i]->path);
-		free(entries[i]);
+	if (!entries)
+		return;
+	for (struct entry **i = entries; *i; i++) {
+		free((*i)->path);
+		free(*i);
 	}
 	free(entries);
 }
 
-static void listing()
+static void listing(struct entry **entries)
 {
 	char buf[128];
 	strftime(buf, 128, "%B %-d, %Y", &ctx.date);
 	puts("<div id=\"listing\">");
 	printf("<h2>%s</h2>", buf);
 	strftime(buf, 128, "%F", &ctx.date);
-	struct dirent **entries;
-	int entry_count = scandir(buf, &entries, is_visible, alphasort);
-	if (entry_count > 0) {
-		char *path = 0;
-		struct stat st;
-		puts("<ul>");
-		for (int i = 0; i < entry_count; i++) {
-			puts("<li>");
-			path = (char*) realloc(path, strlen(entries[i]->d_name) + 12);
-			strncpy(path, buf, 10);
-			path[10] = '/';
-			strcpy(path+11, entries[i]->d_name);
-			printf("<a href=\"%s/%s/", ctx.base_uri, buf);
-			html_escape(entries[i]->d_name);
-			printf("\">");
-			if (stat(path, &st) == 0) {
-				puts("<span class=\"size\">");
-				if (S_ISDIR(st.st_mode))
-					fputs("[DIR]", stdout);
-				else if (st.st_size < 1024)
-					printf("%lu B", st.st_size);
-				else if (st.st_size < 1024*1024)
-					printf("%lu KB", st.st_size/1024);
-				else if (st.st_size < 1024*1024*1024)
-					printf("%lu MB", st.st_size/(1024*1024));
-				else
-					printf("%lu GB", st.st_size/(1024*1024*1024));
-				puts("</span>");
-			}
-			html_escape(entries[i]->d_name);
-			puts("</a></li>");
-			free(entries[i]);
-		}
-		puts("</ul>");
-		if (path) free(path);
-		free(entries);
-	} else if (entry_count < 0) {
-		puts("<span>Nothing.</span>");
-	} else if (entry_count <= 0) {
-		puts("<span>Well&hellip;</span>");
+	if (!entries) {
+		puts("<span>Nothing.</span></div>");
+		return;
 	}
-	puts("</div>");
+	puts("<ul>");
+	for (; *entries; entries++) {
+		puts("<li>");
+		printf("<a href=\"%s/", ctx.base_uri);
+		html_escape((*entries)->path);
+		printf("\">");
+		size_t size = (*entries)->st.st_size;
+		puts("<span class=\"size\">");
+		if (S_ISDIR((*entries)->st.st_mode))
+			fputs("[DIR]", stdout);
+		else if (size < 1024)
+			printf("%lu B", size);
+		else if (size < 1024*1024)
+			printf("%lu KB", size/1024);
+		else if (size < 1024*1024*1024)
+			printf("%lu MB", size/(1024*1024));
+		else
+			printf("%lu GB", size/(1024*1024*1024));
+		puts("</span>");
+		html_escape((*entries)->name);
+		puts("</a></li>");
+	}
+	puts("</ul></div>");
 }
 
 static int process()
@@ -191,7 +178,10 @@ static int process()
 	html_calendars(&ctx);
 	free_calendars(ctx.calendars);
 
-	listing();
+	struct entry **entries;
+	list(&ctx.date, &entries);
+	listing(entries);
+	free_entries(entries);
 
 	html_footer();
 

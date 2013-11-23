@@ -72,7 +72,6 @@ h2 {
 }
 
 #listing li.empty {
-	display: block;
 	padding: 10px;
 }
 
@@ -92,6 +91,8 @@ li:nth-child(odd){
 }
 
 li .size {
+	display: block;
+	padding: 0 15px 15px;
 	float: right;
 	margin-top: 2px;
 	font-size: 0.8em;

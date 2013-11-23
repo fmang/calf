@@ -4,6 +4,12 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <obstack.h>
+#define obstack_chunk_alloc malloc
+#define obstack_chunk_free free
+
+static struct obstack ob;
+
 /*******************************************************************************
  * Input/Output
  * Formatting
@@ -194,8 +200,10 @@ void html_404()
 
 void html_main(struct context *ctx)
 {
+	obstack_init(&ob);
 	printft(snip_header, &ctx->date, ctx->title, ctx->base_uri);
 	html_calendars(ctx);
 	html_listing(ctx);
 	put(snip_footer);
+	obstack_free(&ob, NULL);
 }

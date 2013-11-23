@@ -63,28 +63,23 @@ static char *entities(const char *str)
 
 static int is_leap_year(struct tm *date)
 {
-	if (date->tm_year % 400 == 0) return 1;
-	if (date->tm_year % 100 == 0) return 0;
-	if (date->tm_year % 4 == 0) return 1;
+	if (date->tm_year % 400 == 0)
+		return 1;
+	if (date->tm_year % 100 == 0)
+		return 0;
+	if (date->tm_year % 4 == 0)
+		return 1;
 	return 0;
 }
 
-static int days_for_month(struct tm *date)
+static int month_length(struct tm *date)
 {
 	int month = date->tm_mon + 1;
-	if (month == 2) return is_leap_year(date) ? 29 : 28;
-	if (month == 4 || month == 6 || month == 9 || month == 11) return 30;
+	if (month == 2)
+		return is_leap_year(date) ? 29 : 28;
+	if (month == 4 || month == 6 || month == 9 || month == 11)
+		return 30;
 	return 31;
-}
-
-static int next_mday(struct tm *date)
-{
-	if (date->tm_mday >= days_for_month(date))
-		return -1;
-	date->tm_mday++;
-	date->tm_wday = (date->tm_wday + 1) % 7;
-	date->tm_yday++;
-	return 0;
 }
 
 static void format_calendar(int year, int month, int day, uint32_t links)
@@ -96,25 +91,32 @@ static void format_calendar(int year, int month, int day, uint32_t links)
 	};
 	if (mktime(&date) == -1)
 		return;
+	int last_day = month_length(&date);
 	printft(snip_calendar_header, &date);
-	do {
+	while (date.tm_mday <= last_day) {
 		if (date.tm_wday == 1 || date.tm_mday == 1)
 			printft(snip_calendar_week, &date);
-		if (date.tm_mday == 1) {
+		if (date.tm_mday == 1) { /* pad */
 			int dow = (date.tm_wday + 6) % 7;
 			for (int i = 0; i < dow; i++)
 				put(snip_calendar_empty_cell);
 		}
-		if (date.tm_mday == day)
-			printft(snip_calendar_current_day, &date);
-		else if (links & (1 << (date.tm_mday - 1)))
-			printft(snip_calendar_linked_day, &date);
-		else
-			printft(snip_calendar_regular_day, &date);
+		int today = date.tm_mday == day;
+		int linked = links & (1 << (date.tm_mday - 1));
+		printft(
+			today  ? snip_calendar_current_day :
+			linked ? snip_calendar_linked_day  :
+			snip_calendar_regular_day,
+			&date
+		);
 		if (date.tm_wday == 0)
 			printft(snip_calendar_week_end, &date);
-	} while (next_mday(&date) == 0);
-	if (date.tm_wday != 0) {
+		/* increment */
+		date.tm_mday++;
+		date.tm_wday = (date.tm_wday + 1) % 7;
+		date.tm_yday++;
+	}
+	if (date.tm_wday != 0) { /* pad */
 		int dow = date.tm_wday - 1;
 		for (int i = 0; i < 6 - dow; i++)
 			put(snip_calendar_empty_cell);

@@ -124,7 +124,6 @@ static int process()
 		puts(
 		    "Content-Type: text/html\n"
 		    "Status: 404 Not Found\n"
-		    "\n"
 		);
 		html_404();
 		return EXIT_SUCCESS;
@@ -133,7 +132,6 @@ static int process()
 	puts(
 	    "Content-Type: text/html\n"
 	    "Status: 200 OK\n"
-	    "\n"
 	);
 
 	html_header(&ctx);

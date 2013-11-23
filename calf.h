@@ -38,9 +38,5 @@ struct context {
 	struct entry **entries;
 };
 
-void html_calendars(struct context *ctx);
-void html_listing(struct context *ctx);
-
 void html_404();
-void html_header(struct context *ctx);
-void html_footer();
+void html_main(struct context *ctx);

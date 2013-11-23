@@ -125,7 +125,7 @@ static void format_calendar(int year, int month, int day, uint32_t links)
 	printft(snip_calendar_footer, &date);
 }
 
-void html_calendars(struct context *ctx)
+static void html_calendars(struct context *ctx)
 {
 	put(snip_calendars_header);
 	for (struct calendar *cal = ctx->calendars; cal; cal = cal->next) {
@@ -163,7 +163,7 @@ static char *format_size(struct stat *st)
 	return buffer;
 }
 
-void html_listing(struct context *ctx)
+static void html_listing(struct context *ctx)
 {
 	struct entry **entries = ctx->entries;
 	printft(snip_listing_header, &ctx->date);
@@ -184,7 +184,7 @@ end:
 }
 
 /*******************************************************************************
- * Simple fragments
+ * Pages
  */
 
 void html_404()
@@ -192,12 +192,10 @@ void html_404()
 	put(snip_404);
 }
 
-void html_header(struct context *ctx)
+void html_main(struct context *ctx)
 {
 	printft(snip_header, &ctx->date, ctx->title, ctx->base_uri);
-}
-
-void html_footer()
-{
+	html_calendars(ctx);
+	html_listing(ctx);
 	put(snip_footer);
 }

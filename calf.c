@@ -150,14 +150,6 @@ static void free_context()
  * Main
  */
 
-static void page()
-{
-	html_header(&ctx);
-	html_calendars(&ctx);
-	html_listing(&ctx);
-	html_footer();
-}
-
 static int process()
 {
 #ifdef USE_TIMERS
@@ -179,7 +171,7 @@ static int process()
 	    "Content-Type: text/html\n"
 	    "Status: 200 OK\n"
 	);
-	page();
+	html_main(&ctx);
 	free_context();
 #ifdef USE_TIMERS
 	gettimeofday(&end, NULL);

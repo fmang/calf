@@ -37,33 +37,21 @@ static int printft(const char *format, struct tm *date, ...)
 	return length;
 }
 
-static void push(char **str, const char *c)
-{
-	size_t len = strlen(c);
-	memcpy(*str, c, len);
-	*str += len;
-}
-
 static char *entities(const char *str)
 {
-	static char *buffer = NULL;
-	if (!buffer)
-		buffer = malloc(1024);
-	char *cursor = buffer;
 	for (; *str; str++) {
-		if (*str == '"')
-			push(&cursor, "&quot;");
-		else if (*str == '&')
-			push(&cursor, "&amp;");
-		else if (*str == '<')
-			push(&cursor, "&lt;");
-		else if (*str == '>')
-			push(&cursor, "&gt;");
+		const char *entity =
+			*str == '"' ? "&quot;" :
+			*str == '&' ? "&amp;" :
+			*str == '<' ? "&lt;" :
+			*str == '>' ? "&gt;" : NULL;
+		if (entity)
+			obstack_grow(&ob, entity, strlen(entity));
 		else
-			*(cursor++) = *str;
+			obstack_1grow(&ob, *str);
 	}
-	*cursor = '\0';
-	return buffer;
+	obstack_1grow(&ob, "\0");
+	return obstack_finish(&ob);
 }
 
 /*******************************************************************************

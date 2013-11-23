@@ -50,7 +50,7 @@ static char *entities(const char *str)
 		else
 			obstack_1grow(&ob, *str);
 	}
-	obstack_1grow(&ob, "\0");
+	obstack_1grow(&ob, '\0');
 	return obstack_finish(&ob);
 }
 
@@ -154,6 +154,7 @@ static char *format_size(struct stat *st)
 	for (i = 0; i < 4 && size >= 1024; i++)
 		size /= 1024;
 	obstack_printf(&ob, "%lu %s", size, units[i]);
+	obstack_1grow(&ob, '\0');
 	return obstack_finish(&ob);
 }
 

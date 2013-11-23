@@ -133,7 +133,17 @@ static int init_context()
 	ctx.title = getenv("CALF_TITLE");
 	if (!ctx.title)
 		ctx.title = "Calf";
-	return set_current_date();
+	if (set_current_date())
+		return 1;
+	ctx.calendars = scan();
+	list(&ctx.date, &ctx.entries);
+	return 0;
+}
+
+static void free_context()
+{
+	free_calendars(ctx.calendars);
+	free_entries(ctx.entries);
 }
 
 /*******************************************************************************
@@ -142,17 +152,10 @@ static int init_context()
 
 static void page()
 {
-	struct entry **entries;
-	ctx.calendars = scan();
-	list(&ctx.date, &entries);
-
 	html_header(&ctx);
 	html_calendars(&ctx);
-	html_listing(&ctx, entries);
+	html_listing(&ctx);
 	html_footer();
-
-	free_calendars(ctx.calendars);
-	free_entries(entries);
 }
 
 static int process()
@@ -177,6 +180,7 @@ static int process()
 	    "Status: 200 OK\n"
 	);
 	page();
+	free_context();
 #ifdef USE_TIMERS
 	gettimeofday(&end, NULL);
 	fprintf(stderr, "%s generated in %ld microseconds\n",

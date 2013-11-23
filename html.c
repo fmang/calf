@@ -163,8 +163,9 @@ static char *format_size(struct stat *st)
 	return buffer;
 }
 
-void html_listing(struct context *ctx, struct entry **entries)
+void html_listing(struct context *ctx)
 {
+	struct entry **entries = ctx->entries;
 	printft(snip_listing_header, &ctx->date);
 	if (!entries) {
 		put(snip_listing_empty);

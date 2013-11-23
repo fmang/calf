@@ -23,13 +23,6 @@ struct calendar {
 	struct calendar *next;
 };
 
-struct context {
-	struct tm date;
-	const char *base_uri;
-	const char *title;
-	struct calendar *calendars;
-};
-
 struct entry {
 	ino_t ino;
 	char *path;
@@ -37,8 +30,16 @@ struct entry {
 	struct stat st;
 };
 
+struct context {
+	struct tm date;
+	const char *base_uri;
+	const char *title;
+	struct calendar *calendars;
+	struct entry **entries;
+};
+
 void html_calendars(struct context *ctx);
-void html_listing(struct context *ctx, struct entry **entries);
+void html_listing(struct context *ctx);
 
 void html_404();
 void html_header(struct context *ctx);

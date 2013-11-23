@@ -79,7 +79,10 @@ static int list(struct tm *date, struct entry ***entries)
 		entry->name = entry->path + strlen(dirpath) + 1;
 		stat(entry->path, &entry->st);
 		(*entries)[i] = entry;
+		free(items[i]);
 	}
+	if (count >= 0)
+		free(items);
 	return count;
 }
 

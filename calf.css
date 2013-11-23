@@ -71,9 +71,9 @@ h2 {
 	font-weight: 100;
 }
 
-#listing span {
+#listing li.empty {
 	display: block;
-	padding: 0 15px 15px;
+	padding: 10px;
 }
 
 ul {

@@ -101,42 +101,6 @@ static void free_entries(struct entry **entries)
 	free(entries);
 }
 
-static void listing(struct entry **entries)
-{
-	char buf[128];
-	strftime(buf, 128, "%B %-d, %Y", &ctx.date);
-	puts("<div id=\"listing\">");
-	printf("<h2>%s</h2>", buf);
-	strftime(buf, 128, "%F", &ctx.date);
-	if (!entries) {
-		puts("<span>Nothing.</span></div>");
-		return;
-	}
-	puts("<ul>");
-	for (; *entries; entries++) {
-		puts("<li>");
-		printf("<a href=\"%s/", ctx.base_uri);
-		html_escape((*entries)->path);
-		printf("\">");
-		size_t size = (*entries)->st.st_size;
-		puts("<span class=\"size\">");
-		if (S_ISDIR((*entries)->st.st_mode))
-			fputs("[DIR]", stdout);
-		else if (size < 1024)
-			printf("%lu B", size);
-		else if (size < 1024*1024)
-			printf("%lu KB", size/1024);
-		else if (size < 1024*1024*1024)
-			printf("%lu MB", size/(1024*1024));
-		else
-			printf("%lu GB", size/(1024*1024*1024));
-		puts("</span>");
-		html_escape((*entries)->name);
-		puts("</a></li>");
-	}
-	puts("</ul></div>");
-}
-
 static int process()
 {
 	const char *doc_root = getenv("CALF_ROOT");
@@ -180,7 +144,7 @@ static int process()
 
 	struct entry **entries;
 	list(&ctx.date, &entries);
-	listing(entries);
+	html_listing(&ctx, entries);
 	free_entries(entries);
 
 	html_footer();

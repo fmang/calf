@@ -49,3 +49,20 @@
 	</div>
 @calendars footer
 </div>
+
+@listing header
+<div id="listing">
+	<h2>%%B %%-d, %%Y</h2>
+	<ul>
+@listing empty
+		<li class="empty">Nothing.</li>
+@listing entry
+		<li>
+			<a href="%s/%s">
+				<span class="size">%s</span>
+				%s
+			</a>
+		</li>
+@listing footer
+	</ul>
+</div>

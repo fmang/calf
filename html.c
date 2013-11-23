@@ -2,6 +2,7 @@
 #include "htmlsnips.h"
 #include <stdarg.h>
 #include <stdlib.h>
+#include <string.h>
 
 /*******************************************************************************
  * Input/Output.
@@ -36,6 +37,35 @@ void html_escape(const char *str)
 		else putchar(*str);
 		str++;
 	}
+}
+
+static void push(char **str, const char *c)
+{
+	size_t len = strlen(c);
+	memcpy(*str, c, len);
+	*str += len;
+}
+
+static char *entities(const char *str)
+{
+	static char *buffer = NULL;
+	if (!buffer)
+		buffer = malloc(1024);
+	char *cursor = buffer;
+	for (; *str; str++) {
+		if (*str == '"')
+			push(&cursor, "&quot;");
+		else if (*str == '&')
+			push(&cursor, "&amp;");
+		else if (*str == '<')
+			push(&cursor, "&lt;");
+		else if (*str == '>')
+			push(&cursor, "&gt;");
+		else
+			*(cursor++) = *str;
+	}
+	*cursor = '\0';
+	return buffer;
 }
 
 /*******************************************************************************
@@ -120,6 +150,46 @@ void html_calendars(struct context *ctx)
 		}
 	}
 	put(snip_calendars_footer);
+}
+
+/*******************************************************************************
+ * Listing
+ */
+
+static char *format_size(struct stat *st)
+{
+	static char buffer[128];
+	size_t size = st->st_size;
+	if (S_ISDIR(st->st_mode))
+		return "[DIR]";
+	else if (size < 1024)
+		snprintf(buffer, 128, "%lu B", size);
+	else if (size < 1024*1024)
+		snprintf(buffer, 128, "%lu KB", size/1024);
+	else if (size < 1024*1024*1024)
+		snprintf(buffer, 128, "%lu MB", size/(1024*1024));
+	else
+		snprintf(buffer, 128, "%lu GB", size/(1024*1024*1024));
+	return buffer;
+}
+
+void html_listing(struct context *ctx, struct entry **entries)
+{
+	printft(snip_listing_header, &ctx->date);
+	if (!entries) {
+		put(snip_listing_empty);
+		goto end;
+	}
+	for (; *entries; entries++) {
+		printf(snip_listing_entry,
+			ctx->base_uri,
+			(*entries)->path,
+			format_size(&(*entries)->st),
+			entities((*entries)->name)
+		);
+	}
+end:
+	put(snip_listing_footer);
 }
 
 /*******************************************************************************

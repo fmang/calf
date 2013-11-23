@@ -6,24 +6,9 @@
 
 struct context ctx;
 
-static int set_current_date()
-{
-	const char *uri = getenv("DOCUMENT_URI");
-	if (strncmp(ctx.base_uri, uri, strlen(ctx.base_uri)) != 0)
-		return 0;
-	uri += strlen(ctx.base_uri);
-	char *pos;
-	if ((pos = strptime(uri, "/%F", &ctx.date))) {
-		if (*pos == '\0' || strcmp(pos, "/") == 0)
-			return 1;
-	} else if (*uri == '\0' || strcmp(uri, "/") == 0) {
-		time_t now;
-		time(&now);
-		memcpy(&ctx.date, gmtime(&now), sizeof(struct tm));
-		return 1;
-	}
-	return 0;
-}
+/*******************************************************************************
+ * Calendars
+ */
 
 static int is_visible(const struct dirent *entry)
 {
@@ -68,6 +53,10 @@ static void free_calendars(struct calendar *cal)
 	}
 }
 
+/*******************************************************************************
+ * Listings
+ */
+
 static int list(struct tm *date, struct entry ***entries)
 {
 	char dirpath[128];
@@ -100,6 +89,33 @@ static void free_entries(struct entry **entries)
 	}
 	free(entries);
 }
+
+/*******************************************************************************
+ * Context
+ */
+
+static int set_current_date()
+{
+	const char *uri = getenv("DOCUMENT_URI");
+	if (strncmp(ctx.base_uri, uri, strlen(ctx.base_uri)) != 0)
+		return 0;
+	uri += strlen(ctx.base_uri);
+	char *pos;
+	if ((pos = strptime(uri, "/%F", &ctx.date))) {
+		if (*pos == '\0' || strcmp(pos, "/") == 0)
+			return 1;
+	} else if (*uri == '\0' || strcmp(uri, "/") == 0) {
+		time_t now;
+		time(&now);
+		memcpy(&ctx.date, gmtime(&now), sizeof(struct tm));
+		return 1;
+	}
+	return 0;
+}
+
+/*******************************************************************************
+ * Main
+ */
 
 static int process()
 {

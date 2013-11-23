@@ -5,8 +5,8 @@
 #include <string.h>
 
 /*******************************************************************************
- * Input/Output.
- * Formatting.
+ * Input/Output
+ * Formatting
  */
 
 static int put(const char *str)
@@ -57,8 +57,8 @@ static char *entities(const char *str)
 }
 
 /*******************************************************************************
- * Date-related functions.
- * Calendar generation.
+ * Date-related functions
+ * Calendar generation
  */
 
 static int is_leap_year(struct tm *date)
@@ -181,7 +181,7 @@ end:
 }
 
 /*******************************************************************************
- * Simple fragments.
+ * Simple fragments
  */
 
 void html_404()

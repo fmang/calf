@@ -37,9 +37,9 @@ struct entry {
 	struct stat st;
 };
 
-void html_escape(const char *str);
 void html_calendars(struct context *ctx);
 void html_listing(struct context *ctx, struct entry **entries);
+
 void html_404();
 void html_header(struct context *ctx);
 void html_footer();

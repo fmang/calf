@@ -27,18 +27,6 @@ static int printft(const char *format, struct tm *date, ...)
 	return put(buffer + 2048);
 }
 
-void html_escape(const char *str)
-{
-	while (*str) {
-		if (*str == '"') fputs("&quot;", stdout);
-		else if (*str == '&') fputs("&amp;", stdout);
-		else if (*str == '<') fputs("&lt;", stdout);
-		else if (*str == '>') fputs("&gt;", stdout);
-		else putchar(*str);
-		str++;
-	}
-}
-
 static void push(char **str, const char *c)
 {
 	size_t len = strlen(c);

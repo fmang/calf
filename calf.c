@@ -153,10 +153,20 @@ static void free_context()
  * Main
  */
 
+#ifdef USE_TIMERS
+static void debug_time(char *label, struct timeval *begin, struct timeval *end)
+{
+	fprintf(stderr, "%s %s time: %ld microseconds\n",
+		getenv("DOCUMENT_URI"), label,
+		(end->tv_sec - begin->tv_sec) * 1000000 + (end->tv_usec - begin->tv_usec)
+	);
+}
+#endif
+
 static int process()
 {
 #ifdef USE_TIMERS
-	struct timeval begin, end;
+	struct timeval begin, mid, end;
 	gettimeofday(&begin, NULL);
 #endif
 	int rc = init_context();
@@ -170,6 +180,10 @@ static int process()
 		html_404();
 		return EXIT_SUCCESS;
 	}
+#ifdef USE_TIMERS
+	gettimeofday(&mid, NULL);
+	debug_time("context generation", &begin, &mid);
+#endif
 	puts(
 	    "Content-Type: text/html\n"
 	    "Status: 200 OK\n"
@@ -178,10 +192,8 @@ static int process()
 	free_context();
 #ifdef USE_TIMERS
 	gettimeofday(&end, NULL);
-	fprintf(stderr, "%s generated in %ld microseconds\n",
-		getenv("DOCUMENT_URI"),
-		(end.tv_sec - begin.tv_sec) * 1000000 + (end.tv_usec - begin.tv_usec)
-	);
+	debug_time("HTML generation", &mid, &end);
+	debug_time("total", &begin, &end);
 #endif
 	return EXIT_SUCCESS;
 }

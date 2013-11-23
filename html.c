@@ -158,17 +158,14 @@ static void html_calendars(struct context *ctx)
 
 static char *format_size(struct stat *st)
 {
-	size_t size = st->st_size;
 	if (S_ISDIR(st->st_mode))
 		return "[DIR]";
-	else if (size < 1024)
-		obstack_printf(&ob, "%lu B", size);
-	else if (size < 1024*1024)
-		obstack_printf(&ob, "%lu KB", size/1024);
-	else if (size < 1024*1024*1024)
-		obstack_printf(&ob, "%lu MB", size/(1024*1024));
-	else
-		obstack_printf(&ob, "%lu GB", size/(1024*1024*1024));
+	static const char *units[] = { "B", "KiB", "MiB", "GiB" };
+	size_t size = st->st_size;
+	int i;
+	for (i = 0; i < 4 && size >= 1024; i++)
+		size /= 1024;
+	obstack_printf(&ob, "%lu %s", size, units[i]);
 	return obstack_finish(&ob);
 }
 

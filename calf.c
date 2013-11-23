@@ -98,45 +98,65 @@ static int set_current_date()
 {
 	const char *uri = getenv("DOCUMENT_URI");
 	if (strncmp(ctx.base_uri, uri, strlen(ctx.base_uri)) != 0)
-		return 0;
+		return 1;
 	uri += strlen(ctx.base_uri);
 	char *pos;
 	if ((pos = strptime(uri, "/%F", &ctx.date))) {
 		if (*pos == '\0' || strcmp(pos, "/") == 0)
-			return 1;
+			return 0;
 	} else if (*uri == '\0' || strcmp(uri, "/") == 0) {
 		time_t now;
 		time(&now);
 		memcpy(&ctx.date, gmtime(&now), sizeof(struct tm));
-		return 1;
+		return 0;
 	}
-	return 0;
+	return 1;
 }
 
-/*******************************************************************************
- * Main
- */
-
-static int process()
+static int init_context()
 {
 	const char *doc_root = getenv("CALF_ROOT");
 	if (!doc_root)
 		doc_root = getenv("DOCUMENT_ROOT");
 	if (!doc_root) {
 		fputs("No CALF_ROOT or DOCUMENT_ROOT set.\n", stderr);
-		return EXIT_FAILURE;
+		return -1;
 	}
 	chdir(doc_root);
-
 	ctx.base_uri = getenv("CALF_URI");
 	if (!ctx.base_uri)
 		ctx.base_uri = "";
-
 	ctx.title = getenv("CALF_TITLE");
 	if (!ctx.title)
 		ctx.title = "Calf";
+	return set_current_date();
+}
 
-	if (!set_current_date()) {
+/*******************************************************************************
+ * Main
+ */
+
+static void page()
+{
+	struct entry **entries;
+	ctx.calendars = scan();
+	list(&ctx.date, &entries);
+
+	html_header(&ctx);
+	html_calendars(&ctx);
+	html_listing(&ctx, entries);
+	html_footer();
+
+	free_calendars(ctx.calendars);
+	free_entries(entries);
+}
+
+static int process()
+{
+	int rc = init_context();
+	if (rc == -1)
+		return EXIT_FAILURE;
+	if (rc == 1) {
 		puts(
 		    "Content-Type: text/html\n"
 		    "Status: 404 Not Found\n"
@@ -144,27 +164,12 @@ static int process()
 		html_404();
 		return EXIT_SUCCESS;
 	}
-
 	puts(
 	    "Content-Type: text/html\n"
 	    "Status: 200 OK\n"
 	);
-
-	html_header(&ctx);
-
-	ctx.calendars = scan();
-	html_calendars(&ctx);
-	free_calendars(ctx.calendars);
-
-	struct entry **entries;
-	list(&ctx.date, &entries);
-	html_listing(&ctx, entries);
-	free_entries(entries);
-
-	html_footer();
-
+	page();
 	return EXIT_SUCCESS;
-
 }
 
 int main(int argc, char **argv)

@@ -4,6 +4,10 @@
 #include <dirent.h>
 #include <unistd.h>
 
+#ifdef USE_TIMERS
+#  include <sys/time.h>
+#endif
+
 struct context ctx;
 
 /*******************************************************************************
@@ -153,6 +157,10 @@ static void page()
 
 static int process()
 {
+#ifdef USE_TIMERS
+	struct timeval begin, end;
+	gettimeofday(&begin, NULL);
+#endif
 	int rc = init_context();
 	if (rc == -1)
 		return EXIT_FAILURE;
@@ -169,6 +177,13 @@ static int process()
 	    "Status: 200 OK\n"
 	);
 	page();
+#ifdef USE_TIMERS
+	gettimeofday(&end, NULL);
+	fprintf(stderr, "%s generated in %ld microseconds\n",
+		getenv("DOCUMENT_URI"),
+		(end.tv_sec - begin.tv_sec) * 1000000 + (end.tv_usec - begin.tv_usec)
+	);
+#endif
 	return EXIT_SUCCESS;
 }
 

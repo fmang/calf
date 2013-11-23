@@ -7,6 +7,10 @@ AM_INIT_AUTOMAKE([foreign])
 AC_CONFIG_SRCDIR([calf.c])
 AC_CONFIG_HEADERS([config.h])
 
+AC_ARG_ENABLE([timers],
+	AS_HELP_STRING([--enable-timers], [measure performance]),
+	[AC_DEFINE([USE_TIMERS], [1], [Display timings.])])
+
 AC_ARG_WITH([fcgi],
 	AS_HELP_STRING([--without-fcgi], [support for FastCGI]),
 	[], [with_fcgi=yes])

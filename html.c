@@ -22,15 +22,19 @@ static int put(const char *str)
 
 static int printft(const char *format, struct tm *date, ...)
 {
-	static char *buffer = NULL;
-	if (!buffer)
-		buffer = malloc(4096);
 	va_list ap;
 	va_start(ap, date);
-	vsnprintf(buffer, 2048, format, ap);
-	strftime(buffer + 2048, 2048, buffer, date);
+	obstack_vprintf(&ob, format, ap);
 	va_end(ap);
-	return put(buffer + 2048);
+	obstack_1grow(&ob, '\0');
+	/* predict how much strftime would output */
+	size_t length = obstack_object_size(&ob) + 512;
+	char *buffer = obstack_finish(&ob);
+	char *out = obstack_alloc(&ob, length);
+	strftime(out, length, buffer, date);
+	length = put(out);
+	obstack_free(&ob, buffer);
+	return length;
 }
 
 static void push(char **str, const char *c)

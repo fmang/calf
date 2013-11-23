@@ -8,7 +8,7 @@
 #  include <sys/time.h>
 #endif
 
-struct context ctx;
+static struct context ctx;
 
 /*******************************************************************************
  * Calendars

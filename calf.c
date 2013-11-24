@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <dirent.h>
-#include <unistd.h>
 
 #ifdef USE_TIMERS
 #  include <sys/time.h>
@@ -17,10 +16,10 @@ static int is_visible(const struct dirent *entry)
 	return entry->d_name[0] != '.';
 }
 
-static struct calendar *scan()
+static struct calendar *scan(const char *root)
 {
 	struct dirent **entries;
-	int entry_count = scandir(".", &entries, is_visible, alphasort);
+	int entry_count = scandir(root, &entries, is_visible, alphasort);
 	struct tm date;
 	char buffer[32];
 	struct calendar *cal = NULL;
@@ -59,10 +58,12 @@ static void free_calendars(struct calendar *cal)
  * Listings
  */
 
-static int list(struct tm *date, struct entry ***entries)
+static int list(const char *root, struct tm *date, struct entry ***entries)
 {
-	char dirpath[128];
-	strftime(dirpath, 128, "%F", date);
+	char dirname[16];
+	char *dirpath;
+	strftime(dirname, 16, "%F", date);
+	asprintf(&dirpath, "%s/%s", root, dirname);
 	struct dirent **items;
 	int count = scandir(dirpath, &items, is_visible, alphasort);
 	if (count > 0)
@@ -76,11 +77,13 @@ static int list(struct tm *date, struct entry ***entries)
 		asprintf(&entry->path, "%s/%s", dirpath, items[i]->d_name);
 		entry->name = entry->path + strlen(dirpath) + 1;
 		stat(entry->path, &entry->st);
+		entry->path += strlen(root) + 1; /* FIXME */
 		(*entries)[i] = entry;
 		free(items[i]);
 	}
 	if (count >= 0)
 		free(items);
+	free(dirpath);
 	return count;
 }
 
@@ -98,17 +101,6 @@ static void free_entries(struct entry **entries)
 /*******************************************************************************
  * Context
  */
-
-static int set_root()
-{
-	const char *doc_root = getenv("DOCUMENT_ROOT");
-	if (!doc_root) {
-		fputs("No DOCUMENT_ROOT set.\n", stderr);
-		return -1;
-	}
-	chdir(doc_root);
-	return 0;
-}
 
 static void fill_context(struct context *ctx)
 {
@@ -142,12 +134,15 @@ static int scan_uri(const char *base, struct tm *date)
 static int init_context(struct context *ctx)
 {
 	memset(ctx, 0, sizeof(*ctx));
-	if (set_root())
+	const char *root = getenv("DOCUMENT_ROOT");
+	if (!root) {
+		fputs("No DOCUMENT_ROOT set.\n", stderr);
 		return -1;
+	}
 	fill_context(ctx);
 	if (scan_uri(ctx->base_uri, &ctx->date) == 0) {
-		ctx->calendars = scan();
-		list(&ctx->date, &ctx->entries);
+		ctx->calendars = scan(root);
+		list(root, &ctx->date, &ctx->entries);
 	}
 	return 0;
 }

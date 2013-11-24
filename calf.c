@@ -8,8 +8,6 @@
 #  include <sys/time.h>
 #endif
 
-static struct context ctx;
-
 /*******************************************************************************
  * Calendars
  */
@@ -64,7 +62,7 @@ static void free_calendars(struct calendar *cal)
 static int list(struct tm *date, struct entry ***entries)
 {
 	char dirpath[128];
-	strftime(dirpath, 128, "%F", &ctx.date);
+	strftime(dirpath, 128, "%F", date);
 	struct dirent **items;
 	int count = scandir(dirpath, &items, is_visible, alphasort);
 	if (count > 0)
@@ -114,52 +112,52 @@ static int set_root()
 	return 0;
 }
 
-static void set_env()
+static void fill_context(struct context *ctx)
 {
-	ctx.base_uri = getenv("CALF_URI");
-	if (!ctx.base_uri)
-		ctx.base_uri = "";
-	ctx.title = getenv("CALF_TITLE");
-	if (!ctx.title)
-		ctx.title = "Calf";
+	ctx->base_uri = getenv("CALF_URI");
+	if (!ctx->base_uri)
+		ctx->base_uri = "";
+	ctx->title = getenv("CALF_TITLE");
+	if (!ctx->title)
+		ctx->title = "Calf";
 }
 
-static int set_current_date()
+static int scan_uri(const char *base, struct tm *date)
 {
 	const char *uri = getenv("DOCUMENT_URI");
-	if (strncmp(ctx.base_uri, uri, strlen(ctx.base_uri)) != 0)
+	if (strncmp(base, uri, strlen(base)) != 0)
 		return 1;
-	uri += strlen(ctx.base_uri);
+	uri += strlen(base);
 	char *pos;
-	if ((pos = strptime(uri, "/%F", &ctx.date))) {
+	if ((pos = strptime(uri, "/%F", date))) {
 		if (*pos == '\0' || strcmp(pos, "/") == 0)
 			return 0;
 	} else if (*uri == '\0' || strcmp(uri, "/") == 0) {
 		time_t now;
 		time(&now);
-		memcpy(&ctx.date, gmtime(&now), sizeof(struct tm));
+		memcpy(date, gmtime(&now), sizeof(struct tm));
 		return 0;
 	}
-	return 1;
+	return -1;
 }
 
-static int init_context()
+static int init_context(struct context *ctx)
 {
-	memset(&ctx, 0, sizeof(ctx));
+	memset(ctx, 0, sizeof(*ctx));
 	if (set_root())
 		return -1;
-	set_env();
-	if (set_current_date() == 0) {
-		ctx.calendars = scan();
-		list(&ctx.date, &ctx.entries);
+	fill_context(ctx);
+	if (scan_uri(ctx->base_uri, &ctx->date) == 0) {
+		ctx->calendars = scan();
+		list(&ctx->date, &ctx->entries);
 	}
 	return 0;
 }
 
-static void free_context()
+static void free_context(struct context *ctx)
 {
-	free_calendars(ctx.calendars);
-	free_entries(ctx.entries);
+	free_calendars(ctx->calendars);
+	free_entries(ctx->entries);
 }
 
 /*******************************************************************************
@@ -178,11 +176,12 @@ static void debug_time(char *label, struct timeval *begin, struct timeval *end)
 
 static int process()
 {
+	struct context ctx;
 #ifdef USE_TIMERS
 	struct timeval begin, mid, end;
 	gettimeofday(&begin, NULL);
 #endif
-	if (init_context())
+	if (init_context(&ctx))
 		return EXIT_FAILURE;
 #ifdef USE_TIMERS
 	gettimeofday(&mid, NULL);
@@ -194,7 +193,7 @@ static int process()
 	debug_time("HTML generation", &mid, &end);
 	debug_time("total", &begin, &end);
 #endif
-	free_context();
+	free_context(&ctx);
 	return EXIT_SUCCESS;
 }
 

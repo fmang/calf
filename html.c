@@ -3,6 +3,7 @@
 #include <stdarg.h>
 #include <stdlib.h>
 #include <string.h>
+#include <uriparser/Uri.h>
 
 #include <obstack.h>
 #define obstack_chunk_alloc malloc
@@ -52,6 +53,13 @@ static char *entities(const char *str)
 	}
 	obstack_1grow(&ob, '\0');
 	return obstack_finish(&ob);
+}
+
+static char *uri_escape(const char *uri)
+{
+	char *out = obstack_alloc(&ob, 3 * strlen(uri) + 1);
+	uriEscapeA(uri, out, URI_FALSE, URI_FALSE);
+	return out;
 }
 
 /*******************************************************************************

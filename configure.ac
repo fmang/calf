@@ -26,6 +26,8 @@ AS_IF([test "x$with_fcgi" = 'xno' -a "x$with_systemd" = 'xyes'], [
 AC_PROG_CC_C99
 AC_PROG_RANLIB
 
+PKG_CHECK_MODULES([URIPARSER], [liburiparser])
+
 AS_IF([test "x$with_fcgi" = 'xyes'], [
 	AC_CHECK_LIB([fcgi], [FCGI_Accept], [], [AC_MSG_ERROR([unable to find libfcgi])])
 	AC_CHECK_HEADERS([fcgi_stdio.h], [], [AC_MSG_ERROR([missing fcgi_stdio.h])])

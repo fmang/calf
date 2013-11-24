@@ -101,11 +101,9 @@ static void free_entries(struct entry **entries)
 
 static int set_root()
 {
-	const char *doc_root = getenv("CALF_ROOT");
-	if (!doc_root)
-		doc_root = getenv("DOCUMENT_ROOT");
+	const char *doc_root = getenv("DOCUMENT_ROOT");
 	if (!doc_root) {
-		fputs("No CALF_ROOT or DOCUMENT_ROOT set.\n", stderr);
+		fputs("No DOCUMENT_ROOT set.\n", stderr);
 		return -1;
 	}
 	chdir(doc_root);

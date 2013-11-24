@@ -122,6 +122,7 @@ static int set_current_date()
 
 static int init_context()
 {
+	memset(&ctx, 0, sizeof(ctx));
 	const char *doc_root = getenv("CALF_ROOT");
 	if (!doc_root)
 		doc_root = getenv("DOCUMENT_ROOT");
@@ -136,10 +137,10 @@ static int init_context()
 	ctx.title = getenv("CALF_TITLE");
 	if (!ctx.title)
 		ctx.title = "Calf";
-	if (set_current_date())
-		return 1;
-	ctx.calendars = scan();
-	list(&ctx.date, &ctx.entries);
+	if (set_current_date() == 0) {
+		ctx.calendars = scan();
+		list(&ctx.date, &ctx.entries);
+	}
 	return 0;
 }
 
@@ -169,32 +170,19 @@ static int process()
 	struct timeval begin, mid, end;
 	gettimeofday(&begin, NULL);
 #endif
-	int rc = init_context();
-	if (rc == -1)
+	if (init_context())
 		return EXIT_FAILURE;
-	if (rc == 1) {
-		puts(
-		    "Content-Type: text/html\n"
-		    "Status: 404 Not Found\n"
-		);
-		html_404();
-		return EXIT_SUCCESS;
-	}
 #ifdef USE_TIMERS
 	gettimeofday(&mid, NULL);
 	debug_time("context generation", &begin, &mid);
 #endif
-	puts(
-	    "Content-Type: text/html\n"
-	    "Status: 200 OK\n"
-	);
 	html_main(&ctx);
-	free_context();
 #ifdef USE_TIMERS
 	gettimeofday(&end, NULL);
 	debug_time("HTML generation", &mid, &end);
 	debug_time("total", &begin, &end);
 #endif
+	free_context();
 	return EXIT_SUCCESS;
 }
 

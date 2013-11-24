@@ -190,17 +190,35 @@ end:
  * Pages
  */
 
-void html_404()
+static void html_404()
 {
+	put(
+	    "Content-Type: text/html\n"
+	    "Status: 404 Not Found\n"
+	    "\n"
+	);
 	put(snip_404);
 }
 
-void html_main(struct context *ctx)
+static void html_200(struct context *ctx)
 {
 	obstack_init(&ob);
+	put(
+	    "Content-Type: text/html\n"
+	    "Status: 200 OK\n"
+	    "\n"
+	);
 	printft(snip_header, &ctx->date, ctx->title, ctx->base_uri);
 	html_calendars(ctx);
 	html_listing(ctx);
 	put(snip_footer);
 	obstack_free(&ob, NULL);
+}
+
+void html_main(struct context *ctx)
+{
+	if (ctx->calendars)
+		html_200(ctx);
+	else
+		html_404();
 }

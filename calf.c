@@ -101,6 +101,29 @@ static void free_entries(struct entry **entries)
  * Context
  */
 
+static int set_root()
+{
+	const char *doc_root = getenv("CALF_ROOT");
+	if (!doc_root)
+		doc_root = getenv("DOCUMENT_ROOT");
+	if (!doc_root) {
+		fputs("No CALF_ROOT or DOCUMENT_ROOT set.\n", stderr);
+		return -1;
+	}
+	chdir(doc_root);
+	return 0;
+}
+
+static void set_env()
+{
+	ctx.base_uri = getenv("CALF_URI");
+	if (!ctx.base_uri)
+		ctx.base_uri = "";
+	ctx.title = getenv("CALF_TITLE");
+	if (!ctx.title)
+		ctx.title = "Calf";
+}
+
 static int set_current_date()
 {
 	const char *uri = getenv("DOCUMENT_URI");
@@ -123,20 +146,9 @@ static int set_current_date()
 static int init_context()
 {
 	memset(&ctx, 0, sizeof(ctx));
-	const char *doc_root = getenv("CALF_ROOT");
-	if (!doc_root)
-		doc_root = getenv("DOCUMENT_ROOT");
-	if (!doc_root) {
-		fputs("No CALF_ROOT or DOCUMENT_ROOT set.\n", stderr);
+	if (set_root())
 		return -1;
-	}
-	chdir(doc_root);
-	ctx.base_uri = getenv("CALF_URI");
-	if (!ctx.base_uri)
-		ctx.base_uri = "";
-	ctx.title = getenv("CALF_TITLE");
-	if (!ctx.title)
-		ctx.title = "Calf";
+	set_env();
 	if (set_current_date() == 0) {
 		ctx.calendars = scan();
 		list(&ctx.date, &ctx.entries);

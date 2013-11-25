@@ -21,21 +21,12 @@ static int put(const char *str)
 	return fputs(str, stdout);
 }
 
-static int printft(const char *format, struct tm *date, ...)
+static char *ft(const char *format, struct tm *date)
 {
-	va_list ap;
-	va_start(ap, date);
-	obstack_vprintf(&ob, format, ap);
-	va_end(ap);
-	obstack_1grow(&ob, '\0');
-	/* predict how much strftime would output */
-	size_t length = obstack_object_size(&ob) + 512;
-	char *buffer = obstack_finish(&ob);
-	char *out = obstack_alloc(&ob, length);
-	strftime(out, length, buffer, date);
-	length = put(out);
-	obstack_free(&ob, buffer);
-	return length;
+	size_t len = strftime(NULL, -1, format, date) + 1;
+	char *out = obstack_alloc(&ob, len);
+	strftime(out, len, format, date);
+	return out;
 }
 
 static char *entities(const char *str)
@@ -57,7 +48,6 @@ static char *entities(const char *str)
 
 static char *uri_escape(const char *uri)
 {
-	return uri; /* cannot escape now because of printft */
 	char *out = obstack_alloc(&ob, 3 * strlen(uri) + 1);
 	uriEscapeA(uri, out, URI_FALSE, URI_FALSE);
 	return out;
@@ -99,10 +89,10 @@ static void format_calendar(int year, int month, int day, uint32_t links, const 
 	if (mktime(&date) == -1)
 		return;
 	int last_day = month_length(&date);
-	printft(snip_calendar_header, &date);
+	printf(snip_calendar_header, ft(snip_date_calendar_title, &date));
 	while (date.tm_mday <= last_day) {
 		if (date.tm_wday == 1 || date.tm_mday == 1)
-			printft(snip_calendar_week, &date);
+			printf(snip_calendar_week);
 		if (date.tm_mday == 1) { /* pad */
 			int dow = (date.tm_wday + 6) % 7;
 			for (int i = 0; i < dow; i++)
@@ -110,14 +100,15 @@ static void format_calendar(int year, int month, int day, uint32_t links, const 
 		}
 		int today = date.tm_mday == day;
 		int linked = links & (1 << (date.tm_mday - 1));
-		printft(
+		printf(
 			today  ? snip_calendar_current_day :
 			linked ? snip_calendar_linked_day  :
 			snip_calendar_regular_day,
-			&date, base
+			ft(snip_date_calendar_day, &date),
+			base, ft("%F", &date)
 		);
 		if (date.tm_wday == 0)
-			printft(snip_calendar_week_end, &date);
+			printf(snip_calendar_week_end);
 		/* increment */
 		date.tm_mday++;
 		date.tm_wday = (date.tm_wday + 1) % 7;
@@ -127,9 +118,9 @@ static void format_calendar(int year, int month, int day, uint32_t links, const 
 		int dow = date.tm_wday - 1;
 		for (int i = 0; i < 6 - dow; i++)
 			put(snip_calendar_empty_cell);
-		printft(snip_calendar_week_end, &date);
+		printf(snip_calendar_week_end);
 	}
-	printft(snip_calendar_footer, &date);
+	printf(snip_calendar_footer);
 }
 
 static void html_calendars(struct context *ctx)
@@ -170,15 +161,15 @@ static char *format_size(struct stat *st)
 static void html_listing(struct context *ctx)
 {
 	struct entry **entries = ctx->entries;
-	printft(snip_listing_header, &ctx->date);
+	printf(snip_listing_header, ft(snip_date_listing_header, &ctx->date));
 	if (!entries) {
 		put(snip_listing_empty);
 		goto end;
 	}
 	for (; *entries; entries++) {
-		printft(snip_listing_entry,
-			(*entries)->date,
+		printf(snip_listing_entry,
 			ctx->base_uri,
+			ft("%F", (*entries)->date),
 			uri_escape((*entries)->name),
 			format_size(&(*entries)->st),
 			entities((*entries)->name)
@@ -210,7 +201,7 @@ static void html_200(struct context *ctx)
 	    "Status: 200 OK\n"
 	    "\n"
 	);
-	printft(snip_header, &ctx->date, ctx->title, ctx->base_uri);
+	printf(snip_header, ft(snip_date_title, &ctx->date), ctx->title, ctx->base_uri);
 	html_calendars(ctx);
 	html_listing(ctx);
 	put(snip_footer);

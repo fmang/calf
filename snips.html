@@ -10,11 +10,14 @@
 	</body>
 </html>
 
+@date title
+%B %-d, %Y%
+
 @header
 <!doctype html>
 <html>
 	<head>
-		<title>%%B %%-d, %%Y - %s</title>
+		<title>%s - %s</title>
 		<link rel="stylesheet" type="text/css" href="%scalf.css" />
 		<meta charset="utf-8" />
 	</head>
@@ -26,22 +29,27 @@
 	</body>
 </html>
 
+@date calendar title
+%B %Y%
+@date calendar day
+%-d%
+
 @calendars header
 <div id="calendars">
 @calendar header
 	<div class="calendar">
-		<h3>%%B %%Y</h3>
+		<h3>%s</h3>
 		<table>
 @calendar week
 			<tr>
 @calendar empty cell
 				<td></td>
 @calendar regular day
-				<td>%%-d</td>
+				<td>%s</td>
 @calendar linked day
-				<td><a href="%s%%F/">%%-d</a></td>
+				<td><a href="%2$s%3$s/">%1$s</a></td>
 @calendar current day
-				<td class="current">%%-d</td>
+				<td class="current">%s</td>
 @calendar week end
 			</tr>
 @calendar footer
@@ -50,15 +58,18 @@
 @calendars footer
 </div>
 
+@date listing header
+%B %-d, %Y%
+
 @listing header
 <div id="listing">
-	<h2>%%B %%-d, %%Y</h2>
+	<h2>%s</h2>
 	<ul>
 @listing empty
 		<li class="empty">Nothing.</li>
 @listing entry
 		<li>
-			<a href="%s%%F/%s">
+			<a href="%s%s/%s">
 				<span class="size">%s</span>
 				%s
 			</a>

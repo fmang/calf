@@ -191,7 +191,7 @@ static int process()
 
 int main(int argc, char **argv)
 {
-#ifdef HAVE_FCGI
+#ifdef HAVE_LIBFCGI
 #  ifdef HAVE_SYSTEMD
 	if (sd_listen_fds(0) >= 1)
 		dup2(SD_LISTEN_FDS_START, 0);

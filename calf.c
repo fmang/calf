@@ -102,16 +102,8 @@ static void free_entries(struct entry **entries)
  * Context
  */
 
-static void fill_context(struct context *ctx)
+static int scan_uri(const char *uri, const char **base, struct tm *date)
 {
-	ctx->title = getenv("CALF_TITLE");
-	if (!ctx->title)
-		ctx->title = "Calf";
-}
-
-static int scan_uri(const char **base, struct tm *date)
-{
-	const char *uri = getenv("DOCUMENT_URI");
 	if (!strcmp(uri, "/")) {
 		*base = "";
 		time_t now;
@@ -139,11 +131,18 @@ static int init_context(struct context *ctx)
 		fputs("No DOCUMENT_ROOT set.\n", stderr);
 		return -1;
 	}
-	fill_context(ctx);
-	if (scan_uri(&ctx->base_uri, &ctx->date) == 0) {
+	ctx->uri = getenv("DOCUMENT_URI");
+	if (!ctx->uri) {
+		fputs("No DOCUMENT_URI set.\n", stderr);
+		return -1;
+	}
+	if (scan_uri(ctx->uri, &ctx->base_uri, &ctx->date) == 0) {
 		ctx->calendars = scan(root);
 		list(root, &ctx->date, &ctx->entries);
 	}
+	ctx->title = getenv("CALF_TITLE");
+	if (!ctx->title)
+		ctx->title = "Calf";
 	return 0;
 }
 

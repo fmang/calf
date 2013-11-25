@@ -35,6 +35,7 @@ struct context {
 	struct tm date;
 	const char *base_uri;
 	const char *title;
+	const char *uri;
 	struct calendar *calendars;
 	struct entry **entries;
 };

@@ -53,6 +53,17 @@ static char *uri_escape(const char *uri)
 	return out;
 }
 
+static char *concat(const char *s1, const char *s2)
+{
+	size_t l1 = strlen(s1);
+	size_t l2 = strlen(s2);
+	char *out = obstack_alloc(&ob, l1 + l2 + 1);
+	memcpy(out, s1, l1);
+	memcpy(out + l1, s2, l2);
+	out[l1 + l2] = '\0';
+	return out;
+}
+
 /*******************************************************************************
  * Date-related functions
  * Calendar generation
@@ -167,9 +178,11 @@ static void html_listing(struct context *ctx)
 		goto end;
 	}
 	for (; *entries; entries++) {
+		char *relative_uri = "";
+		if (strcmp(ctx->base_uri, "../") || (*entries)->date != &ctx->date)
+			relative_uri = concat(ctx->base_uri, ft("%F/", (*entries)->date));
 		printf(snip_listing_entry,
-			ctx->base_uri,
-			ft("%F", (*entries)->date),
+			relative_uri,
 			uri_escape((*entries)->name),
 			format_size(&(*entries)->st),
 			entities((*entries)->name)

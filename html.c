@@ -79,15 +79,19 @@ static int month_length(struct tm *date)
 	return 31;
 }
 
-static void format_calendar(int year, int month, int day, uint32_t links, const char *base)
+static void format_calendar(struct context *ctx, struct calendar *cal, int month)
 {
 	struct tm date = {
 		.tm_mday = 1,
 		.tm_mon  = month,
-		.tm_year = year,
+		.tm_year = cal->year,
 	};
 	if (mktime(&date) == -1)
 		return;
+	int current_year = cal->year == ctx->date.tm_year;
+	int day = 0;
+	if (current_year && month == ctx->date.tm_mon)
+		day = ctx->date.tm_mday;
 	int last_day = month_length(&date);
 	printf(snip_calendar_header, ft(snip_date_calendar_title, &date));
 	while (date.tm_mday <= last_day) {
@@ -99,13 +103,13 @@ static void format_calendar(int year, int month, int day, uint32_t links, const 
 				put(snip_calendar_empty_cell);
 		}
 		int today = date.tm_mday == day;
-		int linked = links & (1 << (date.tm_mday - 1));
+		int linked = cal->months[month] & (1 << (date.tm_mday - 1));
 		printf(
 			today  ? snip_calendar_current_day :
 			linked ? snip_calendar_linked_day  :
 			snip_calendar_regular_day,
 			ft(snip_date_calendar_day, &date),
-			base, ft("%F", &date)
+			ctx->base_uri, ft("%F", &date)
 		);
 		if (date.tm_wday == 0)
 			printf(snip_calendar_week_end);
@@ -127,14 +131,10 @@ static void html_calendars(struct context *ctx)
 {
 	put(snip_calendars_header);
 	for (struct calendar *cal = ctx->calendars; cal; cal = cal->next) {
-		int current_year = cal->year == ctx->date.tm_year;
 		for (int i = 0; i < 12; i++) {
-			int day = 0;
-			if (current_year && i == ctx->date.tm_mon)
-				day = ctx->date.tm_mday;
 			if (cal->months[i] == 0)
 				continue;
-			format_calendar(cal->year, i, day, cal->months[i], ctx->base_uri);
+			format_calendar(ctx, cal, i);
 		}
 	}
 	put(snip_calendars_footer);

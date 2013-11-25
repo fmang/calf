@@ -74,10 +74,10 @@ static int list(const char *root, struct tm *date, struct entry ***entries)
 		struct entry *entry;
 		entry = malloc(sizeof(*entry));
 		entry->ino = items[i]->d_ino;
+		entry->date = date;
 		asprintf(&entry->path, "%s/%s", dirpath, items[i]->d_name);
 		entry->name = entry->path + strlen(dirpath) + 1;
 		stat(entry->path, &entry->st);
-		entry->path += strlen(root) + 1; /* FIXME */
 		(*entries)[i] = entry;
 		free(items[i]);
 	}

@@ -26,6 +26,7 @@ struct calendar {
 struct entry {
 	ino_t ino;
 	char *path;
+	struct tm *date;
 	char *name;
 	struct stat st;
 };

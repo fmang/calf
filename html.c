@@ -57,6 +57,7 @@ static char *entities(const char *str)
 
 static char *uri_escape(const char *uri)
 {
+	return uri; /* cannot escape now because of printft */
 	char *out = obstack_alloc(&ob, 3 * strlen(uri) + 1);
 	uriEscapeA(uri, out, URI_FALSE, URI_FALSE);
 	return out;
@@ -175,9 +176,10 @@ static void html_listing(struct context *ctx)
 		goto end;
 	}
 	for (; *entries; entries++) {
-		printf(snip_listing_entry,
+		printft(snip_listing_entry,
+			(*entries)->date,
 			ctx->base_uri,
-			(*entries)->path,
+			uri_escape((*entries)->name),
 			format_size(&(*entries)->st),
 			entities((*entries)->name)
 		);

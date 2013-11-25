@@ -88,7 +88,7 @@ static int month_length(struct tm *date)
 	return 31;
 }
 
-static void format_calendar(int year, int month, int day, uint32_t links)
+static void format_calendar(int year, int month, int day, uint32_t links, const char *base)
 {
 	struct tm date = {
 		.tm_mday = 1,
@@ -113,7 +113,7 @@ static void format_calendar(int year, int month, int day, uint32_t links)
 			today  ? snip_calendar_current_day :
 			linked ? snip_calendar_linked_day  :
 			snip_calendar_regular_day,
-			&date
+			&date, base
 		);
 		if (date.tm_wday == 0)
 			printft(snip_calendar_week_end, &date);
@@ -142,7 +142,7 @@ static void html_calendars(struct context *ctx)
 				day = ctx->date.tm_mday;
 			if (cal->months[i] == 0)
 				continue;
-			format_calendar(cal->year, i, day, cal->months[i]);
+			format_calendar(cal->year, i, day, cal->months[i], ctx->base_uri);
 		}
 	}
 	put(snip_calendars_footer);

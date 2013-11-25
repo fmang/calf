@@ -104,31 +104,31 @@ static void free_entries(struct entry **entries)
 
 static void fill_context(struct context *ctx)
 {
-	ctx->base_uri = getenv("CALF_URI");
-	if (!ctx->base_uri)
-		ctx->base_uri = "";
 	ctx->title = getenv("CALF_TITLE");
 	if (!ctx->title)
 		ctx->title = "Calf";
 }
 
-static int scan_uri(const char *base, struct tm *date)
+static int scan_uri(const char **base, struct tm *date)
 {
 	const char *uri = getenv("DOCUMENT_URI");
-	if (strncmp(base, uri, strlen(base)) != 0)
-		return 1;
-	uri += strlen(base);
-	char *pos;
-	if ((pos = strptime(uri, "/%F", date))) {
-		if (*pos == '\0' || strcmp(pos, "/") == 0)
-			return 0;
-	} else if (*uri == '\0' || strcmp(uri, "/") == 0) {
+	if (!strcmp(uri, "/")) {
+		*base = "";
 		time_t now;
 		time(&now);
 		memcpy(date, gmtime(&now), sizeof(struct tm));
 		return 0;
 	}
-	return -1;
+	char *pos = strptime(uri, "/%F", date);
+	if (!pos)
+		return -1;
+	else if (*pos == '\0')
+		*base = "";
+	else if (!strcmp(pos, "/"))
+		*base = "../";
+	else
+		return -1;
+	return 0;
 }
 
 static int init_context(struct context *ctx)
@@ -140,7 +140,7 @@ static int init_context(struct context *ctx)
 		return -1;
 	}
 	fill_context(ctx);
-	if (scan_uri(ctx->base_uri, &ctx->date) == 0) {
+	if (scan_uri(&ctx->base_uri, &ctx->date) == 0) {
 		ctx->calendars = scan(root);
 		list(root, &ctx->date, &ctx->entries);
 	}

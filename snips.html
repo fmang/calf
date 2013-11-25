@@ -15,7 +15,7 @@
 <html>
 	<head>
 		<title>%%B %%-d, %%Y - %s</title>
-		<link rel="stylesheet" type="text/css" href="%s/calf.css" />
+		<link rel="stylesheet" type="text/css" href="%scalf.css" />
 		<meta charset="utf-8" />
 	</head>
 	<body>
@@ -39,7 +39,7 @@
 @calendar regular day
 				<td>%%-d</td>
 @calendar linked day
-				<td><a href="/%%F/">%%-d</a></td>
+				<td><a href="%s%%F/">%%-d</a></td>
 @calendar current day
 				<td class="current">%%-d</td>
 @calendar week end
@@ -58,7 +58,7 @@
 		<li class="empty">Nothing.</li>
 @listing entry
 		<li>
-			<a href="%s/%s">
+			<a href="%s%s">
 				<span class="size">%s</span>
 				%s
 			</a>

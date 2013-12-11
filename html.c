@@ -1,8 +1,6 @@
 #include "calf.h"
 #include "htmlsnips.h"
 #include <stdarg.h>
-#include <stdlib.h>
-#include <string.h>
 #include <uriparser/Uri.h>
 
 #include <obstack.h>

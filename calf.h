@@ -4,8 +4,11 @@
 
 #define _GNU_SOURCE /* asprintf, strptime */
 
+#include <dirent.h>
 #include <stdio.h>
 #include <stdint.h>
+#include <stdlib.h>
+#include <string.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <time.h>
@@ -39,5 +42,9 @@ struct context {
 	struct calendar *calendars;
 	struct entry **entries;
 };
+
+int is_visible(const struct dirent *entry);
+int list(const char *root, struct tm *date, struct entry ***entries);
+void free_entries(struct entry **entries);
 
 void html_main(struct context *ctx);

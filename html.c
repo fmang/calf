@@ -1,6 +1,8 @@
 #include "calf.h"
 #include "htmlsnips.h"
 #include <stdarg.h>
+#include <stdio.h>
+#include <sys/stat.h>
 #include <uriparser/Uri.h>
 
 #include <obstack.h>
@@ -82,22 +84,13 @@ static char *format_size(struct stat *st)
 
 static void html_listing(struct context *ctx)
 {
-	struct entry **entries = ctx->entries;
+	void **entries = NULL;
 	printf(snip_listing_header, ft(snip_date_listing_header, &ctx->date));
 	if (!entries) {
 		put(snip_listing_empty);
 		goto end;
 	}
 	for (; *entries; entries++) {
-		char *relative_uri = "";
-		if (strcmp(ctx->base_uri, "../") || (*entries)->date != &ctx->date)
-			relative_uri = concat(ctx->base_uri, ft("%F/", (*entries)->date));
-		printf(snip_listing_entry,
-			relative_uri,
-			uri_escape((*entries)->name),
-			format_size(&(*entries)->st),
-			entities((*entries)->name)
-		);
 	}
 end:
 	put(snip_listing_footer);
@@ -110,7 +103,7 @@ end:
 void html_main(struct context *ctx)
 {
 	obstack_init(&ob);
-	printf(snip_header, ft(snip_date_title, &ctx->date), ctx->title, ctx->base_uri);
+	printf(snip_header, ft(snip_date_title, &ctx->date), ctx->title);
 	html_listing(ctx);
 	put(snip_footer);
 	obstack_free(&ob, NULL);

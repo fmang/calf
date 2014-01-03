@@ -64,7 +64,7 @@ static void reply(struct context *ctx)
 	} else {
 		puts("Status: 200 OK");
 		puts("Content-Type: text/html\n");
-		puts("<h1>Hello</h1>");
+		html_main(ctx);
 	}
 	free(canon);
 }

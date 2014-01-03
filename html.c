@@ -67,18 +67,11 @@ static char *concat(const char *s1, const char *s2)
 	return out;
 }
 
-/*******************************************************************************
- * Listing
- */
+/******************************************************************************/
 
 static int is_visible(const struct dirent *entry)
 {
 	return entry->d_name[0] != '.';
-}
-
-static int to_list(const struct dirent *entry)
-{
-	return is_visible(entry) && strcmp(entry->d_name, "thumbs");
 }
 
 static char *drop_extension(const char *filename)
@@ -126,6 +119,13 @@ static int list_thumbs(char *dirpath, char *name)
 	return 0;
 }
 
+/******************************************************************************/
+
+static int to_list(const struct dirent *entry)
+{
+	return is_visible(entry) && strcmp(entry->d_name, "thumbs");
+}
+
 static char *format_size(struct stat *st)
 {
 	if (S_ISDIR(st->st_mode))
@@ -165,6 +165,8 @@ static int list_files(char *dirpath, char *name)
 	return 0;
 }
 
+/******************************************************************************/
+
 static void listing(char *dirpath, char *name)
 {
 	printf(snip_listing_header, name);
@@ -173,7 +175,7 @@ static void listing(char *dirpath, char *name)
 	put(snip_listing_footer);
 }
 
-static int html_listings(struct context *ctx)
+static int listings(struct context *ctx)
 {
 	struct dirent **items;
 	char *dirpath = concat(ctx->root, ft("/%Y/%m/", &ctx->date));
@@ -194,7 +196,7 @@ void html_main(struct context *ctx)
 {
 	obstack_init(&ob);
 	printf(snip_header, ft(snip_date_title, &ctx->date), ctx->title);
-	html_listings(ctx);
+	listings(ctx);
 	put(snip_footer);
 	obstack_free(&ob, NULL);
 }

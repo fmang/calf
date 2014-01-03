@@ -42,8 +42,7 @@ static int init_context(struct context *ctx)
 		fputs("No DOCUMENT_URI set.\n", stderr);
 		return -1;
 	}
-	if (scan_uri(ctx->uri, &ctx->base_uri, &ctx->date) == 0)
-		list(root, &ctx->date, &ctx->entries);
+	if (scan_uri(ctx->uri, &ctx->base_uri, &ctx->date) == 0);
 	ctx->title = getenv("CALF_TITLE");
 	if (!ctx->title)
 		ctx->title = "Calf";
@@ -52,7 +51,6 @@ static int init_context(struct context *ctx)
 
 static void free_context(struct context *ctx)
 {
-	free_entries(ctx->entries);
 }
 
 /*******************************************************************************

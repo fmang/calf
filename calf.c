@@ -58,14 +58,25 @@ static void free_context(struct context *ctx)
 
 void do_things(struct context *ctx)
 {
-	puts("Content-Type: text/plain\n");
 	if (scan_uri(ctx->uri, &ctx->date) == -1) {
+		puts("Status: 404 Not Found");
+		puts("Content-Type: text/plain\n");
 		puts("404 Not Found");
-	} else {
-		char *canon = canonical_uri(&ctx->date);
-		puts(canon);
-		free(canon);
+		return;
 	}
+	char *canon = canonical_uri(&ctx->date);
+	if (strcmp(canon, ctx->uri)) {
+		puts("Status: 303 See Other");
+		fputs("Location: ", stdout);
+		puts(canon);
+		puts("");
+		puts(canon);
+	} else {
+		puts("Status: 200 OK");
+		puts("Content-Type: text/html\n");
+		puts("<h1>Hello</h1>");
+	}
+	free(canon);
 }
 
 #ifdef USE_TIMERS

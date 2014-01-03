@@ -16,14 +16,17 @@ static int scan_uri(const char *uri, struct tm *date)
 		memcpy(date, gmtime(&now), sizeof(struct tm));
 		return 0;
 	}
-	char *pos = strptime(uri, "/%F", date);
-	if (!pos)
-		return -1;
-	else if (*pos == '\0');
-	else if (!strcmp(pos, "/"));
-	else
-		return -1;
-	return 0;
+	char *pos = strptime(uri, "/%Y/%m", date);
+	if (pos && (*pos == '\0' || !strcmp(pos, "/")))
+		return 0;
+	return -1;
+}
+
+static char *canonical_uri(struct tm *date)
+{
+	char *uri = malloc(16);
+	strftime(uri, 16, "/%Y/%m/", date);
+	return uri;
 }
 
 static int init_context(struct context *ctx)
@@ -39,7 +42,6 @@ static int init_context(struct context *ctx)
 		fputs("No DOCUMENT_URI set.\n", stderr);
 		return -1;
 	}
-	if (scan_uri(ctx->uri, &ctx->date) == 0);
 	ctx->title = getenv("CALF_TITLE");
 	if (!ctx->title)
 		ctx->title = "Calf";
@@ -57,7 +59,13 @@ static void free_context(struct context *ctx)
 void do_things(struct context *ctx)
 {
 	puts("Content-Type: text/plain\n");
-	puts("I don't want a pickle");
+	if (scan_uri(ctx->uri, &ctx->date) == -1) {
+		puts("404 Not Found");
+	} else {
+		char *canon = canonical_uri(&ctx->date);
+		puts(canon);
+		free(canon);
+	}
 }
 
 #ifdef USE_TIMERS

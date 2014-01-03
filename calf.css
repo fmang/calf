@@ -2,57 +2,10 @@ body {
 	background-color: #1f3370;
 }
 
-/* Calendar */
-
-#calendars {
-	float: left;
-	width: 240px;
-	margin: 0 5px;
-	text-align: center;
-	background-color: #04010f;
-	color: #c1cfde;
-}
-
-.calendar {
-	padding: 7px;
-}
-
-.calendar h3 {
-	font-size: 1em;
-	margin: 5px;
-	color: #717f9e;
-}
-.calendar:hover h3, .calendar.current h3 {
-	color: #d1dfee;
-}
-
-.calendar table, #calendars:hover .calendar.current table {
-	display: none;
-}
-#calendars:hover .calendar:hover table, .calendar.current table {
-	display: table;
-}
-
-table {
-	margin: auto;
-	empty-cells: hide;
-	width: 220px;
-	height: 10em;
-}
-
-td a {
-	color: #0c40ad;
-	text-decoration: none;
-}
-td:hover { background-color: #050544; }
-td.current { background-color: #030333; }
-
-/* File listing */
-
 #listing {
 	background-color: #929cd9;
 	color: #010211;
-	margin: 15px 5px 15px 260px;
+	margin: 15px;
 }
 
 #listing a {

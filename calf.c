@@ -6,6 +6,12 @@
 #  include <sys/time.h>
 #endif
 
+#ifdef HAVE_LIBFCGI
+#  ifdef HAVE_SYSTEMD
+#    include <systemd/sd-daemon.h>
+#  endif
+#endif
+
 /*******************************************************************************
  * Context
  */

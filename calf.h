@@ -6,9 +6,6 @@
 
 #ifdef HAVE_LIBFCGI
 #  include <fcgi_stdio.h>
-#  ifdef HAVE_SYSTEMD
-#    include <systemd/sd-daemon.h>
-#  endif
 #else
 #  include <stdio.h>
 #endif

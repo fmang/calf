@@ -55,3 +55,19 @@ tr:nth-child(odd){
 a img {
 	border-width: 0;
 }
+
+.calendar {
+	text-align:center;
+}
+
+.calendar h3 {
+	font-size: 1em;
+}
+
+.calendar .current {
+	font-weight: bold;
+}
+
+.calendar a {
+	color: #005;
+}

@@ -1,6 +1,7 @@
 #include "calf.h"
 #include "htmlsnips.h"
 
+#include <ctype.h>
 #include <dirent.h>
 #include <stdarg.h>
 #include <stdio.h>
@@ -192,11 +193,66 @@ static int listings(struct context *ctx)
 
 /******************************************************************************/
 
+static int is_min_number(const struct dirent *entry)
+{
+	if (*entry->d_name == '0')
+		return 0;
+	for (const char *c = entry->d_name; *c; c++) {
+		if (!isdigit(*c))
+			return 0;
+	}
+	return 1;
+}
+
+static void list_months(struct context *ctx, char *dirpath, char *year)
+{
+	struct tm tm;
+	tm.tm_year = atoi(year) - 1900;
+	printf(snip_year_header, year);
+	for (tm.tm_mon = 0; tm.tm_mon <= 11; tm.tm_mon++) {
+		if (tm.tm_mon != 0)
+			put(snip_month_separator);
+		char *path = concat(dirpath, ft("%m", &tm));
+		int current = tm.tm_year == ctx->date.tm_year && tm.tm_mon == ctx->date.tm_mon;
+		char *uri = ft("%Y/%m", &tm);
+		printf(
+			current ? snip_month_current :
+			!access(path, F_OK) ? snip_month_linked :
+			snip_month_regular,
+			ft(snip_date_month, &tm),
+			uri
+		);
+	}
+	put(snip_year_footer);
+}
+
+static int list_years(struct context *ctx)
+{
+	struct dirent **items;
+	int count = scandir(ctx->root, &items, is_min_number, alphasort);
+	if (count < 0)
+		return -1;
+	char *root = concat(ctx->root, "/");
+	put(snip_calendar_header);
+	for (int i = 0; i < count; i++) {
+		char *path = concat(concat(root, items[i]->d_name), "/");
+		list_months(ctx, path, items[i]->d_name);
+		free(items[i]);
+	}
+	if (count >= 0)
+		free(items);
+	put(snip_calendar_footer);
+	return count;
+}
+
+/******************************************************************************/
+
 void html_main(struct context *ctx)
 {
 	obstack_init(&ob);
 	printf(snip_header, ft(snip_date_title, &ctx->date), ctx->title);
 	listings(ctx);
+	list_years(ctx);
 	put(snip_footer);
 	obstack_free(&ob, NULL);
 }

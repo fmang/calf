@@ -47,3 +47,24 @@
 
 @listing footer
 </div>
+
+@date month
+%B%
+
+@calendar header
+<div class="calendar">
+@year header
+	<div>
+		<h3>%s</h3>
+@month regular
+		%s
+@month linked
+		<a href="../../%2$s">%1$s</a>
+@month current
+		<span class="current">%s</b>
+@month separator
+		-
+@year footer
+	</div>
+@calendar footer
+</div>

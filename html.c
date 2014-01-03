@@ -84,7 +84,7 @@ static char *format_size(struct stat *st)
 	int i;
 	for (i = 0; i < 4 && size >= 1024; i++)
 		size /= 1024;
-	obstack_printf(&ob, "%lu %s", size, units[i]);
+	obstack_printf(&ob, "%zu %s", size, units[i]);
 	obstack_1grow(&ob, '\0');
 	return obstack_finish(&ob);
 }

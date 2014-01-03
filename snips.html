@@ -18,18 +18,19 @@
 </html>
 
 @listing header
-<div id="listing">
+<div class="listing">
 	<h2>%s</h2>
-	<ul>
+	<table>
 @listing empty
-		<li class="empty">Nothing.</li>
+		<tr>
+			<td class="empty">Empty.</td>
+			<td></td>
+		</tr>
 @listing entry
-		<li>
-			<a href="%s/%s">
-				<span class="size">%s</span>
-				%s
-			</a>
-		</li>
+		<tr>
+			<td><a href="%1$s/%2$s">%4$s</a></td>
+			<td class="size"><a href="%1$s/%2$s">%3$s</a></td>
+		</tr>
 @listing footer
-	</ul>
+	</table>
 </div>

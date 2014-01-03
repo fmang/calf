@@ -2,51 +2,42 @@ body {
 	background-color: #1f3370;
 }
 
-#listing {
+.listing {
 	background-color: #929cd9;
 	color: #010211;
 	margin: 15px;
 }
 
-#listing a {
+a {
 	color: #000312;
 	text-decoration: none;
 }
 
-#listing a:hover {
+tr:hover a {
 	color: #0d4f74;
 }
 
 h2 {
 	margin: 0;
-	padding: 15px;
+	padding: 10px 15px;
 	font-size: 1.7em;
 	font-weight: 100;
 }
 
-#listing li.empty {
-	padding: 10px;
+table {
+	width: 100%;
 }
 
-ul {
-	list-style-type: none;
-	margin: 0;
-	padding: 0;
-}
-
-li a {
+td a, td.empty {
 	display: block;
-	padding: 7px 0 7px 18px;
+	padding: 7px 14px;
 }
 
-li:nth-child(odd){
+td.size {
+	width: 100px;
+	text-align: right;
+}
+
+tr:nth-child(odd){
 	background: #8992d5;
-}
-
-li .size {
-	display: block;
-	padding: 0 15px 15px;
-	float: right;
-	margin-top: 2px;
-	font-size: 0.8em;
 }

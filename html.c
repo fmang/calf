@@ -121,7 +121,7 @@ static int html_listings(struct context *ctx)
 	char *dirpath = concat(ctx->root, ft("/%Y/%m/", &ctx->date));
 	int count = scandir(dirpath, &items, is_visible, alphasort);
 	for (int i = 0; i < count; i++) {
-		char *path = concat(dirpath, items[i]->d_name);
+		char *path = concat(concat(dirpath, items[i]->d_name), "/");
 		if (!html_listing(ctx, path, items[i]->d_name))
 			displayed++;
 		free(items[i]);

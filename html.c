@@ -97,7 +97,7 @@ static int html_listing(struct context *ctx, char *dirpath, char *name)
 		return -1;
 	printf(snip_listing_header, name);
 	if (count == 0)
-		fputs(snip_listing_empty, stdout);
+		put(snip_listing_empty);
 	for (int i = 0; i < count; i++) {
 		struct stat st;
 		memset(&st, 0, sizeof(st));

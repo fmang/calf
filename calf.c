@@ -8,10 +8,9 @@
  * Context
  */
 
-static int scan_uri(const char *uri, const char **base, struct tm *date)
+static int scan_uri(const char *uri, struct tm *date)
 {
 	if (!strcmp(uri, "/")) {
-		*base = "";
 		time_t now;
 		time(&now);
 		memcpy(date, gmtime(&now), sizeof(struct tm));
@@ -20,10 +19,8 @@ static int scan_uri(const char *uri, const char **base, struct tm *date)
 	char *pos = strptime(uri, "/%F", date);
 	if (!pos)
 		return -1;
-	else if (*pos == '\0')
-		*base = "";
-	else if (!strcmp(pos, "/"))
-		*base = "../";
+	else if (*pos == '\0');
+	else if (!strcmp(pos, "/"));
 	else
 		return -1;
 	return 0;
@@ -42,7 +39,7 @@ static int init_context(struct context *ctx)
 		fputs("No DOCUMENT_URI set.\n", stderr);
 		return -1;
 	}
-	if (scan_uri(ctx->uri, &ctx->base_uri, &ctx->date) == 0);
+	if (scan_uri(ctx->uri, &ctx->date) == 0);
 	ctx->title = getenv("CALF_TITLE");
 	if (!ctx->title)
 		ctx->title = "Calf";

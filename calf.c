@@ -12,10 +12,6 @@
 #  endif
 #endif
 
-/*******************************************************************************
- * Context
- */
-
 static int scan_uri(const char *uri, struct tm *date)
 {
 	if (!strcmp(uri, "/")) {
@@ -28,13 +24,6 @@ static int scan_uri(const char *uri, struct tm *date)
 	if (pos && (*pos == '\0' || !strcmp(pos, "/")))
 		return 0;
 	return -1;
-}
-
-static char *canonical_uri(struct tm *date)
-{
-	char *uri = malloc(16);
-	strftime(uri, 16, "/%Y/%m/", date);
-	return uri;
 }
 
 static int init_context(struct context *ctx)
@@ -56,11 +45,7 @@ static int init_context(struct context *ctx)
 	return 0;
 }
 
-/*******************************************************************************
- * Main
- */
-
-void do_things(struct context *ctx)
+static void reply(struct context *ctx)
 {
 	if (scan_uri(ctx->uri, &ctx->date) == -1) {
 		puts("Status: 404 Not Found");
@@ -68,7 +53,8 @@ void do_things(struct context *ctx)
 		puts("404 Not Found");
 		return;
 	}
-	char *canon = canonical_uri(&ctx->date);
+	char *canon = malloc(16);
+	strftime(canon, 16, "/%Y/%m/", &ctx->date);
 	if (strcmp(canon, ctx->uri)) {
 		puts("Status: 303 See Other");
 		fputs("Location: ", stdout);
@@ -106,7 +92,7 @@ static int process()
 	gettimeofday(&mid, NULL);
 	debug_time("context generation", &begin, &mid);
 #endif
-	do_things(&ctx);
+	reply(&ctx);
 #ifdef USE_TIMERS
 	gettimeofday(&end, NULL);
 	debug_time("HTML generation", &mid, &end);

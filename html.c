@@ -31,7 +31,7 @@ static char *ft(const char *format, struct tm *date)
 	return out;
 }
 
-static char *entities(const char *str)
+static char *html_escape(const char *str)
 {
 	for (; *str; str++) {
 		const char *entity =
@@ -89,9 +89,27 @@ static char *format_size(struct stat *st)
 	return obstack_finish(&ob);
 }
 
-static int html_listing(struct context *ctx, char *path, char *name)
+static int html_listing(struct context *ctx, char *dirpath, char *name)
 {
+	struct dirent **items;
+	int count = scandir(dirpath, &items, is_visible, alphasort);
+	if (count < 0)
+		return -1;
 	printf(snip_listing_header, name);
+	if (count == 0)
+		fputs(snip_listing_empty, stdout);
+	for (int i = 0; i < count; i++) {
+		struct stat st;
+		memset(&st, 0, sizeof(st));
+		stat(concat(dirpath, items[i]->d_name), &st);
+		printf(snip_listing_entry,
+			uri_escape(name), uri_escape(items[i]->d_name),
+			format_size(&st), html_escape(items[i]->d_name)
+		);
+		free(items[i]);
+	}
+	if (count >= 0)
+		free(items);
 	put(snip_listing_footer);
 	return 0;
 }

@@ -89,20 +89,20 @@ static char *format_size(struct stat *st)
 	return obstack_finish(&ob);
 }
 
-static int html_listing(struct context *ctx, char *dirpath, char *name)
+static int list_files(struct context *ctx, char *dirpath, char *name)
 {
 	struct dirent **items;
 	int count = scandir(dirpath, &items, is_visible, alphasort);
 	if (count < 0)
 		return -1;
-	printf(snip_listing_header, name);
+	put(snip_listing_table_header);
 	if (count == 0)
-		put(snip_listing_empty);
+		put(snip_listing_table_empty);
 	for (int i = 0; i < count; i++) {
 		struct stat st;
 		memset(&st, 0, sizeof(st));
 		stat(concat(dirpath, items[i]->d_name), &st);
-		printf(snip_listing_entry,
+		printf(snip_listing_table_entry,
 			uri_escape(name), uri_escape(items[i]->d_name),
 			format_size(&st), html_escape(items[i]->d_name)
 		);
@@ -110,25 +110,30 @@ static int html_listing(struct context *ctx, char *dirpath, char *name)
 	}
 	if (count >= 0)
 		free(items);
-	put(snip_listing_footer);
+	put(snip_listing_table_footer);
 	return 0;
+}
+
+static void listing(struct context *ctx, char *dirpath, char *name)
+{
+	printf(snip_listing_header, name);
+	list_files(ctx, dirpath, name);
+	put(snip_listing_footer);
 }
 
 static int html_listings(struct context *ctx)
 {
-	int displayed = 0;
 	struct dirent **items;
 	char *dirpath = concat(ctx->root, ft("/%Y/%m/", &ctx->date));
 	int count = scandir(dirpath, &items, is_visible, alphasort);
 	for (int i = 0; i < count; i++) {
 		char *path = concat(concat(dirpath, items[i]->d_name), "/");
-		if (!html_listing(ctx, path, items[i]->d_name))
-			displayed++;
+		listing(ctx, path, items[i]->d_name);
 		free(items[i]);
 	}
 	if (count >= 0)
 		free(items);
-	return displayed;
+	return count;
 }
 
 /******************************************************************************/

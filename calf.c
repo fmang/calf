@@ -48,10 +48,6 @@ static int init_context(struct context *ctx)
 	return 0;
 }
 
-static void free_context(struct context *ctx)
-{
-}
-
 /*******************************************************************************
  * Main
  */
@@ -108,7 +104,6 @@ static int process()
 	debug_time("HTML generation", &mid, &end);
 	debug_time("total", &begin, &end);
 #endif
-	free_context(&ctx);
 	return EXIT_SUCCESS;
 }
 

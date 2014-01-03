@@ -29,35 +29,6 @@
 	</body>
 </html>
 
-@date calendar title
-%B %Y%
-@date calendar day
-%-d%
-
-@calendars header
-<div id="calendars">
-@calendar header
-	<div class="calendar">
-		<h3>%s</h3>
-		<table>
-@calendar week
-			<tr>
-@calendar empty cell
-				<td></td>
-@calendar regular day
-				<td>%s</td>
-@calendar linked day
-				<td><a href="%2$s%3$s/">%1$s</a></td>
-@calendar current day
-				<td class="current">%s</td>
-@calendar week end
-			</tr>
-@calendar footer
-		</table>
-	</div>
-@calendars footer
-</div>
-
 @date listing header
 %B %-d, %Y%
 

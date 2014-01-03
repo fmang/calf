@@ -20,23 +20,10 @@
 #  endif
 #endif
 
-struct entry {
-	ino_t ino;
-	char *path;
-	struct tm *date;
-	char *name;
-	struct stat st;
-};
-
 struct context {
 	struct tm date;
 	const char *title;
 	const char *uri;
-	struct entry **entries;
 };
-
-int is_visible(const struct dirent *entry);
-int list(const char *root, struct tm *date, struct entry ***entries);
-void free_entries(struct entry **entries);
 
 void html_main(struct context *ctx);

@@ -12,6 +12,7 @@
 
 struct context {
 	struct tm date;
+	const char *root;
 	const char *title;
 	const char *uri;
 };

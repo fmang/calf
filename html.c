@@ -1,5 +1,7 @@
 #include "calf.h"
 #include "htmlsnips.h"
+
+#include <dirent.h>
 #include <stdarg.h>
 #include <stdio.h>
 #include <sys/stat.h>
@@ -68,6 +70,11 @@ static char *concat(const char *s1, const char *s2)
  * Listing
  */
 
+int is_visible(const struct dirent *entry)
+{
+	return entry->d_name[0] != '.';
+}
+
 static char *format_size(struct stat *st)
 {
 	if (S_ISDIR(st->st_mode))
@@ -82,29 +89,37 @@ static char *format_size(struct stat *st)
 	return obstack_finish(&ob);
 }
 
-static void html_listing(struct context *ctx)
+static int html_listing(struct context *ctx, char *path, char *name)
 {
-	void **entries = NULL;
-	printf(snip_listing_header, ft(snip_date_listing_header, &ctx->date));
-	if (!entries) {
-		put(snip_listing_empty);
-		goto end;
-	}
-	for (; *entries; entries++) {
-	}
-end:
+	printf(snip_listing_header, name);
 	put(snip_listing_footer);
+	return 0;
 }
 
-/*******************************************************************************
- * Pages
- */
+static int html_listings(struct context *ctx)
+{
+	int displayed = 0;
+	struct dirent **items;
+	char *dirpath = concat(ctx->root, ft("/%Y/%m/", &ctx->date));
+	int count = scandir(dirpath, &items, is_visible, alphasort);
+	for (int i = 0; i < count; i++) {
+		char *path = concat(dirpath, items[i]->d_name);
+		if (!html_listing(ctx, path, items[i]->d_name))
+			displayed++;
+		free(items[i]);
+	}
+	if (count >= 0)
+		free(items);
+	return displayed;
+}
+
+/******************************************************************************/
 
 void html_main(struct context *ctx)
 {
 	obstack_init(&ob);
 	printf(snip_header, ft(snip_date_title, &ctx->date), ctx->title);
-	html_listing(ctx);
+	html_listings(ctx);
 	put(snip_footer);
 	obstack_free(&ob, NULL);
 }

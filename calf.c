@@ -29,8 +29,8 @@ static int scan_uri(const char *uri, struct tm *date)
 static int init_context(struct context *ctx)
 {
 	memset(ctx, 0, sizeof(*ctx));
-	const char *root = getenv("DOCUMENT_ROOT");
-	if (!root) {
+	ctx->root = getenv("DOCUMENT_ROOT");
+	if (!ctx->root) {
 		fputs("No DOCUMENT_ROOT set.\n", stderr);
 		return -1;
 	}

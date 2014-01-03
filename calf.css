@@ -42,3 +42,16 @@ td.size {
 tr:nth-child(odd){
 	background: #8992d5;
 }
+
+.thumbnails {
+	padding: 10px;
+	background-color: #b2ace9;
+}
+
+.thumbnails img {
+	padding: 2px;
+}
+
+a img {
+	border-width: 0;
+}

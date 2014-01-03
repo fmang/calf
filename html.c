@@ -5,6 +5,7 @@
 #include <stdarg.h>
 #include <stdio.h>
 #include <sys/stat.h>
+#include <unistd.h>
 #include <uriparser/Uri.h>
 
 #include <obstack.h>
@@ -70,9 +71,59 @@ static char *concat(const char *s1, const char *s2)
  * Listing
  */
 
-int is_visible(const struct dirent *entry)
+static int is_visible(const struct dirent *entry)
 {
 	return entry->d_name[0] != '.';
+}
+
+static int to_list(const struct dirent *entry)
+{
+	return is_visible(entry) && strcmp(entry->d_name, "thumbs");
+}
+
+static char *drop_extension(const char *filename)
+{
+	char *dot = strrchr(filename, '.');
+	if (!dot)
+		return NULL;
+	size_t base_len = dot - filename + 1;
+	char *base = obstack_alloc(&ob, base_len);
+	strncpy(base, filename, base_len - 1);
+	base[base_len - 1] = '\0';
+	return base;
+}
+
+static int is_regular_file(const char *path)
+{
+	struct stat st;
+	memset(&st, 0, sizeof(st));
+	stat(path, &st);
+	return S_ISREG(st.st_mode);
+}
+
+static int list_thumbs(char *dirpath, char *name)
+{
+	char *thumbsdir = concat(dirpath, "thumbs/");
+	struct dirent **items;
+	int count = scandir(thumbsdir, &items, is_visible, alphasort);
+	if (count < 0)
+		return -1;
+	put(snip_listing_thumbnails_header);
+	for (int i = 0; i < count; free(items[i]), i++) {
+		char *base = drop_extension(items[i]->d_name);
+		if (!base || access(concat(dirpath, base), F_OK))
+			continue; /* thumbnail to non-existent file */
+		if (!is_regular_file(concat(thumbsdir, items[i]->d_name)))
+			continue;
+		printf(snip_listing_thumbnail,
+			uri_escape(name), uri_escape(items[i]->d_name),
+			uri_escape(base), html_escape(base)
+		);
+	}
+	if (count >= 0)
+		free(items);
+	put(snip_listing_thumbnails_footer);
+	return 0;
 }
 
 static char *format_size(struct stat *st)
@@ -92,7 +143,7 @@ static char *format_size(struct stat *st)
 static int list_files(char *dirpath, char *name)
 {
 	struct dirent **items;
-	int count = scandir(dirpath, &items, is_visible, alphasort);
+	int count = scandir(dirpath, &items, to_list, alphasort);
 	if (count < 0)
 		return -1;
 	put(snip_listing_table_header);
@@ -117,6 +168,7 @@ static int list_files(char *dirpath, char *name)
 static void listing(char *dirpath, char *name)
 {
 	printf(snip_listing_header, name);
+	list_thumbs(dirpath, name);
 	list_files(dirpath, name);
 	put(snip_listing_footer);
 }

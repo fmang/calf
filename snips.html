@@ -20,6 +20,16 @@
 @listing header
 <div class="listing">
 	<h2>%s</h2>
+
+@listing thumbnails header
+	<div class="thumbnails">
+@listing thumbnail
+		<a href="%1$s/%3$s" title="%4$s">
+			<img src="%1$s/thumbs/%2$s" alt="%4$s" />
+		</a>
+@listing thumbnails footer
+	</div>
+
 @listing table header
 	<table>
 @listing table empty
@@ -34,5 +44,6 @@
 		</tr>
 @listing table footer
 	</table>
+
 @listing footer
 </div>

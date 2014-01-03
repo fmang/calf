@@ -107,31 +107,11 @@ end:
  * Pages
  */
 
-static void html_404()
-{
-	put(
-	    "Content-Type: text/html\n"
-	    "Status: 404 Not Found\n"
-	    "\n"
-	);
-	put(snip_404);
-}
-
-static void html_200(struct context *ctx)
+void html_main(struct context *ctx)
 {
 	obstack_init(&ob);
-	put(
-	    "Content-Type: text/html\n"
-	    "Status: 200 OK\n"
-	    "\n"
-	);
 	printf(snip_header, ft(snip_date_title, &ctx->date), ctx->title, ctx->base_uri);
 	html_listing(ctx);
 	put(snip_footer);
 	obstack_free(&ob, NULL);
-}
-
-void html_main(struct context *ctx)
-{
-	html_200(ctx);
 }

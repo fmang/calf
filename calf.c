@@ -59,6 +59,12 @@ static void free_context(struct context *ctx)
  * Main
  */
 
+void do_things(struct context *ctx)
+{
+	puts("Content-Type: text/plain\n");
+	puts("I don't want a pickle");
+}
+
 #ifdef USE_TIMERS
 static void debug_time(char *label, struct timeval *begin, struct timeval *end)
 {
@@ -82,7 +88,7 @@ static int process()
 	gettimeofday(&mid, NULL);
 	debug_time("context generation", &begin, &mid);
 #endif
-	html_main(&ctx);
+	do_things(&ctx);
 #ifdef USE_TIMERS
 	gettimeofday(&end, NULL);
 	debug_time("HTML generation", &mid, &end);

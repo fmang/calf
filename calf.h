@@ -2,15 +2,6 @@
 #  include "config.h"
 #endif
 
-#define _GNU_SOURCE /* asprintf, strptime */
-
-#include <dirent.h>
-#include <stdio.h>
-#include <stdint.h>
-#include <stdlib.h>
-#include <string.h>
-#include <sys/stat.h>
-#include <sys/types.h>
 #include <time.h>
 
 #ifdef HAVE_LIBFCGI
@@ -18,6 +9,8 @@
 #  ifdef HAVE_SYSTEMD
 #    include <systemd/sd-daemon.h>
 #  endif
+#else
+#  include <stdio.h>
 #endif
 
 struct context {

@@ -1,4 +1,6 @@
 #include "calf.h"
+#include <stdlib.h>
+#include <string.h>
 
 #ifdef USE_TIMERS
 #  include <sys/time.h>

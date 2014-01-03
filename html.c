@@ -89,7 +89,7 @@ static char *format_size(struct stat *st)
 	return obstack_finish(&ob);
 }
 
-static int list_files(struct context *ctx, char *dirpath, char *name)
+static int list_files(char *dirpath, char *name)
 {
 	struct dirent **items;
 	int count = scandir(dirpath, &items, is_visible, alphasort);
@@ -114,10 +114,10 @@ static int list_files(struct context *ctx, char *dirpath, char *name)
 	return 0;
 }
 
-static void listing(struct context *ctx, char *dirpath, char *name)
+static void listing(char *dirpath, char *name)
 {
 	printf(snip_listing_header, name);
-	list_files(ctx, dirpath, name);
+	list_files(dirpath, name);
 	put(snip_listing_footer);
 }
 
@@ -128,7 +128,7 @@ static int html_listings(struct context *ctx)
 	int count = scandir(dirpath, &items, is_visible, alphasort);
 	for (int i = 0; i < count; i++) {
 		char *path = concat(concat(dirpath, items[i]->d_name), "/");
-		listing(ctx, path, items[i]->d_name);
+		listing(path, items[i]->d_name);
 		free(items[i]);
 	}
 	if (count >= 0)

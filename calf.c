@@ -5,48 +5,6 @@
 #endif
 
 /*******************************************************************************
- * Calendars
- */
-
-static struct calendar *scan(const char *root)
-{
-	struct dirent **entries;
-	int entry_count = scandir(root, &entries, is_visible, alphasort);
-	struct tm date;
-	char buffer[32];
-	struct calendar *cal = NULL;
-	struct calendar *new_cal;
-	for (int i = entry_count - 1; i >= 0; free(entries[i]), i--) {
-		/* ^ reverse processing to end up with an ordered list */
-		if (!strptime(entries[i]->d_name, "%F", &date))
-			continue;
-		/* strptime is too lenient, we want to force canonical ISO 8601. */
-		strftime(buffer, 32, "%F", &date);
-		if (strcmp(entries[i]->d_name, buffer))
-			continue;
-		if (!cal || cal->year != date.tm_year) {
-			new_cal = calloc(1, sizeof(*new_cal));
-			new_cal->year = date.tm_year;
-			new_cal->next = cal;
-			cal = new_cal;
-		}
-		cal->months[date.tm_mon] |= 1 << (date.tm_mday - 1);
-	}
-	free(entries);
-	return cal;
-}
-
-static void free_calendars(struct calendar *cal)
-{
-	struct calendar *next;
-	while (cal) {
-		next = cal->next;
-		free(cal);
-		cal = next;
-	}
-}
-
-/*******************************************************************************
  * Context
  */
 
@@ -84,10 +42,8 @@ static int init_context(struct context *ctx)
 		fputs("No DOCUMENT_URI set.\n", stderr);
 		return -1;
 	}
-	if (scan_uri(ctx->uri, &ctx->base_uri, &ctx->date) == 0) {
-		ctx->calendars = scan(root);
+	if (scan_uri(ctx->uri, &ctx->base_uri, &ctx->date) == 0)
 		list(root, &ctx->date, &ctx->entries);
-	}
 	ctx->title = getenv("CALF_TITLE");
 	if (!ctx->title)
 		ctx->title = "Calf";
@@ -96,7 +52,6 @@ static int init_context(struct context *ctx)
 
 static void free_context(struct context *ctx)
 {
-	free_calendars(ctx->calendars);
 	free_entries(ctx->entries);
 }
 

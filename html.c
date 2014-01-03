@@ -133,8 +133,5 @@ static void html_200(struct context *ctx)
 
 void html_main(struct context *ctx)
 {
-	if (ctx->calendars)
-		html_200(ctx);
-	else
-		html_404();
+	html_200(ctx);
 }

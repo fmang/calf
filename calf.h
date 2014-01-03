@@ -20,12 +20,6 @@
 #  endif
 #endif
 
-struct calendar {
-	int year;
-	uint32_t months[12];
-	struct calendar *next;
-};
-
 struct entry {
 	ino_t ino;
 	char *path;
@@ -39,7 +33,6 @@ struct context {
 	const char *base_uri;
 	const char *title;
 	const char *uri;
-	struct calendar *calendars;
 	struct entry **entries;
 };
 

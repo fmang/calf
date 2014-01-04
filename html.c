@@ -169,7 +169,7 @@ static int list_files(char *dirpath, char *name)
 
 static void listing(char *dirpath, char *name)
 {
-	printf(snip_listing_header, name);
+	printf(snip_listing_header, html_escape(name));
 	list_thumbs(dirpath, name);
 	list_files(dirpath, name);
 	put(snip_listing_footer);
@@ -249,7 +249,7 @@ static int list_years(struct context *ctx)
 void html_main(struct context *ctx)
 {
 	obstack_init(&ob);
-	printf(snip_header, ft(snip_date_title, &ctx->date), ctx->title);
+	printf(snip_header, ft(snip_date_title, &ctx->date), html_escape(ctx->title));
 	if (listings(ctx) <= 0)
 		put(snip_empty);
 	list_years(ctx);

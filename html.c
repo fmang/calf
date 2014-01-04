@@ -97,7 +97,7 @@ static int is_regular_file(const char *path)
 
 static int list_thumbs(char *dirpath, char *name)
 {
-	char *thumbsdir = concat(dirpath, "thumbs/");
+	char *thumbsdir = concat(dirpath, ".thumbs/");
 	struct dirent **items;
 	int count = scandir(thumbsdir, &items, is_visible, alphasort);
 	if (count < 0)

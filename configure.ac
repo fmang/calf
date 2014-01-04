@@ -4,7 +4,7 @@
 AC_PREREQ([2.69])
 AC_INIT([calf], [2.0], [fmang+calf@mg0.fr])
 AM_INIT_AUTOMAKE([foreign])
-AC_CONFIG_SRCDIR([calf.c])
+AC_CONFIG_SRCDIR([src/calf.c])
 AC_CONFIG_HEADERS([config.h])
 
 AC_ARG_ENABLE([timers],
@@ -42,5 +42,5 @@ AC_CHECK_HEADERS(
 	[], [AC_MSG_ERROR([critical header missing])]
 )
 
-AC_CONFIG_FILES([Makefile])
+AC_CONFIG_FILES([Makefile src/Makefile share/Makefile])
 AC_OUTPUT

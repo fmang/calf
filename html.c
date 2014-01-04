@@ -250,7 +250,8 @@ void html_main(struct context *ctx)
 {
 	obstack_init(&ob);
 	printf(snip_header, ft(snip_date_title, &ctx->date), ctx->title);
-	listings(ctx);
+	if (listings(ctx) <= 0)
+		put(snip_empty);
 	list_years(ctx);
 	put(snip_footer);
 	obstack_free(&ob, NULL);

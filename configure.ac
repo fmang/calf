@@ -3,7 +3,7 @@
 
 AC_PREREQ([2.69])
 AC_INIT([calf], [2.0], [fmang+calf@mg0.fr])
-AM_INIT_AUTOMAKE([foreign])
+AM_INIT_AUTOMAKE([foreign no-exeext])
 AC_CONFIG_SRCDIR([src/calf.c])
 AC_CONFIG_HEADERS([config.h])
 
@@ -24,10 +24,12 @@ AS_IF([test "x$with_fcgi" = 'xno' -a "x$with_systemd" = 'xyes'], [
 ])
 
 AC_PROG_CC_C99
+AC_PROG_LN_S
 AC_PROG_RANLIB
 
 PKG_CHECK_MODULES([URIPARSER], [liburiparser])
 
+AM_CONDITIONAL(FASTCGI, [test "x$with_fcgi" = xyes])
 AS_IF([test "x$with_fcgi" = 'xyes'], [
 	AC_CHECK_LIB([fcgi], [FCGI_Accept], [], [AC_MSG_ERROR([unable to find libfcgi])])
 	AC_CHECK_HEADERS([fcgi_stdio.h], [], [AC_MSG_ERROR([missing fcgi_stdio.h])])

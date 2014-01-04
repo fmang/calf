@@ -7,5 +7,7 @@ nodist_calf_SOURCES = htmlsnips.h
 BUILT_SOURCES = htmlsnips.h
 CLEANFILES = htmlsnips.h
 
+dist_noinst_SCRIPTS = mksnips.sed
+
 htmlsnips.h: snips.html mksnips.sed
 	sed -f mksnips.sed $< > $@

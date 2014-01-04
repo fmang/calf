@@ -40,7 +40,7 @@ AS_IF([test "x$with_systemd" = 'xyes'], [
 ])
 
 AC_CHECK_HEADERS(
-	[unistd.h],
+	[unistd.h obstack.h],
 	[], [AC_MSG_ERROR([critical header missing])]
 )
 

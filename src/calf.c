@@ -57,7 +57,7 @@ static void reply(struct context *ctx)
 	char *canon = malloc(16);
 	strftime(canon, 16, "/%Y/%m/", &ctx->date);
 	if (strcmp(canon, ctx->uri)) {
-		puts("Status: 303 See Other");
+		puts("Status: 301 Moved Permanently");
 		fputs("Location: ", stdout);
 		puts(canon);
 		puts("");

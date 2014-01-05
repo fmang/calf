@@ -1,0 +1,36 @@
+# Don't forget to set the root directory.
+
+# You probably want to use 'autoindex on' too, calf won't provide a page for
+# every directory.
+
+location ~ ^/([0-9]+/[0-9]+)?/?$ {
+
+    # FastCGI configuration (recommended)
+    fastcgi_pass unix:/run/calf.sock;
+
+    # CGI configuration
+    #fastcgi_pass unix:/run/fcgiwrap.sock;
+    #fastcgi_param SCRIPT_FILENAME @pkglibexecdir@/calf.cgi;
+
+    # Text displayed in the header of the page
+    #fastcgi_param CALF_TITLE "Calf";
+
+    # If you want cool error pages, use this and error_page
+    #fastcgi_intercept_errors on;
+
+    include fastcgi.conf;
+
+}
+
+rewrite ^/([0-9]+/[0-9]+)/([^/]*)/?$ /$1/#$2? redirect;
+
+location ~ /.thumbs/ {
+    autoindex off;
+}
+
+location /calf.css {
+    alias @pkgdatadir@/style.css;
+}
+
+# Backward compatibility with calf "1.0"
+#rewrite ^/([0-9]+)\-([0-9]+)\-([0-9]+)(/.*)?$ /$1/$2/$3$4? permanent;

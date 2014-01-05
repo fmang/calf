@@ -8,6 +8,10 @@
 #include <unistd.h>
 #include <uriparser/Uri.h>
 
+#ifdef HAVE_LIBFCGI
+#  include <stdarg.h>
+#endif
+
 #include <obstack.h>
 #define obstack_chunk_alloc malloc
 #define obstack_chunk_free free
@@ -23,6 +27,26 @@ static int put(const char *str)
 {
 	return fputs(str, stdout);
 }
+
+#ifdef HAVE_LIBFCGI
+#undef printf
+#define printf printf_that_should_not_exist
+static int printf_that_should_not_exist(const char *format, ...)
+{
+	/* FastCGI uses a homemade substitute for printf. */
+	/* Unfortunately, calf isn't buying it, sooo... */
+	char *result;
+	va_list ap;
+	va_start(ap, format);
+	int rc = obstack_vprintf(&ob, format, ap);
+	va_end(ap);
+	obstack_1grow(&ob, '\0');
+	result = obstack_finish(&ob);
+	put(result);
+	obstack_free(&ob, result);
+	return rc;
+}
+#endif
 
 static char *ft(const char *format, struct tm *date)
 {

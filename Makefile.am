@@ -3,3 +3,5 @@ MAYBE_SYSTEMD = systemd
 endif
 
 SUBDIRS = src share $(MAYBE_SYSTEMD)
+
+EXTRA_DIST = README

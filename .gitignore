@@ -1,5 +1,6 @@
-calf.cgi
-htmlsnips.h
+src/calf.cgi
+src/htmlsnips.h
+systemd/calf.service
 
 *.o
 *.sw?

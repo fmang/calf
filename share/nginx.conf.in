@@ -4,25 +4,30 @@
 # every directory.
 
 location ~ ^/([0-9]+/[0-9]+)?/?$ {
+    # e.g. /2014/01/
 
-    # FastCGI configuration (recommended)
+    # FastCGI configuration (recommended).
     fastcgi_pass unix:/run/calf.sock;
 
-    # CGI configuration
+    # CGI configuration.
     #fastcgi_pass unix:/run/fcgiwrap.sock;
     #fastcgi_param SCRIPT_FILENAME @pkglibexecdir@/calf.cgi;
 
-    # Text displayed in the header of the page
+    # Text displayed in the header of the page.
     #fastcgi_param CALF_TITLE "Calf";
 
-    # If you want cool error pages, use this and error_page
+    # If you want cool error pages, use this and error_page.
     #fastcgi_intercept_errors on;
 
     include fastcgi.conf;
 
 }
 
+# /2013/ -> /2013/01/
 rewrite ^/([0-9]+)/?$ /$1/01/? redirect;
+
+# /2014/01/somedir -> /2014/01/#somedir
+# Anything deeper isn't redirected.
 rewrite ^/([0-9]+/[0-9]+)/([^/]+)/?$ /$1/#$2? redirect;
 
 location ~ /.thumbs/ {
@@ -34,4 +39,5 @@ location /calf.css {
 }
 
 # Backward compatibility with calf "1.0"
+# /2013-12-11/whatever -> /2013/12/11/whatever
 #rewrite ^/([0-9]+)\-([0-9]+)\-([0-9]+)(/.*)?$ /$1/$2/$3$4? permanent;

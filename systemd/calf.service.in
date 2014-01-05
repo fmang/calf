@@ -1,3 +1,6 @@
+# You shouldn't start this unit directly, as calf will think it is run as CGI.
+# Start calf.socket instead, or use something like spawn-fcgi.
+
 [Service]
 User=http
 ExecStart=@pkglibexecdir@/calf.fcgi

@@ -35,6 +35,7 @@ AS_IF([test "x$with_fcgi" = 'xyes'], [
 	AC_CHECK_HEADERS([fcgi_stdio.h], [], [AC_MSG_ERROR([missing fcgi_stdio.h])])
 ])
 
+AM_CONDITIONAL([SYSTEMD], [test "x$with_systemd" = xyes])
 AS_IF([test "x$with_systemd" = 'xyes'], [
 	PKG_CHECK_MODULES([SYSTEMD_DAEMON], [libsystemd-daemon], [AC_DEFINE([HAVE_SYSTEMD], [1], [Support for systemd's socket activation.])])
 ])
@@ -44,5 +45,5 @@ AC_CHECK_HEADERS(
 	[], [AC_MSG_ERROR([critical header missing])]
 )
 
-AC_CONFIG_FILES([Makefile src/Makefile share/Makefile])
+AC_CONFIG_FILES([Makefile src/Makefile share/Makefile systemd/Makefile])
 AC_OUTPUT

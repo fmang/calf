@@ -1,0 +1,33 @@
+.TH CALF 8 2014-01-05
+.SH NAME
+calf - CGI file lister
+.SH SYNOPSIS
+.B @pkglibexecdir@/calf.cgi
+.br
+.B @pkglibexecdir@/calf.fcgi
+.SH DESCRIPTION
+.SH ENVIRONMENT
+Depending on how the application was spawned, the following variables may
+either refer to the usual process environment, or to the FastCGI variables
+the web servers sends to the application.
+.P
+Pretty much like every CGI application, \fBcalf\fP uses the \fIDOCUMENT_ROOT\fP
+and \fIDOCUMENT_URI\fP variables to locate the the directory it should read.
+Usually, the web server takes care of those two variable.
+.P
+In addition, the \fICALF_TITLE\fP variable is read to generate the headers of
+the web pages.
+.SH CONFIGURATION
+Sample server section.
+.SS /etc/nginx/nginx.conf
+\&
+.nf
+server {
+    include calf.conf
+}
+.fi
+.SH SEE ALSO
+.BR systemd.socket (5),
+.BR fcgiwrap (8),
+.BR spawn-fcgi (1),
+.BR multiwatch (1).

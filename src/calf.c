@@ -9,6 +9,7 @@
 #ifdef HAVE_LIBFCGI
 #  ifdef HAVE_SYSTEMD
 #    include <systemd/sd-daemon.h>
+#    include <unistd.h>
 #  endif
 #endif
 

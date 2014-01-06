@@ -79,6 +79,14 @@ h1 {
 	padding: 5px;
 }
 
+.calendar a {
+	text-decoration: none;
+}
+
+.calendar a:hover {
+	text-decoration: underline;
+}
+
 .calendar div {
 	margin: 5px;
 }

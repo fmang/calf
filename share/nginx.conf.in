@@ -35,7 +35,7 @@ location ~ /.thumbs/ {
 }
 
 location /calf.css {
-    alias @pkgdatadir@/style.css;
+    alias @pkgdatadir@/calf.css;
 }
 
 # Backward compatibility with calf "1.0"

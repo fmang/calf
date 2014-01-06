@@ -6,6 +6,36 @@ calf - CGI file lister
 .br
 .B @pkglibexecdir@/calf.fcgi
 .SH DESCRIPTION
+For simplicity, \fBcalf\fP expects a rigid file hierarchy. In short:
+
+/year/month/section/files
+
+The year mustn't contain a leading zero. The month must be written with exactly
+two digits. In other words: YYYY/MM. \fIsection\fP can be an arbitrary string,
+but it will be hidden if it start with a dot.
+
+/2014/01/pic/lipsum.jpg
+
+Of course, \fBcalf\fP should be able to read all these directories. Permission
+issues may cause unexpected results. Also, if a file is found when a directory
+is expected, the result is the same as if the directory wasn't readable.
+
+Directories under a section are linked but won't be listed by \fBcalf\fP. You
+should set up your web server for auto-indexing in order to do that.
+
+Thumbnails are to be put in a directory called \fI.thumbs\fP under the section
+directory. The thumbnail files should be named after the original file,
+followed by an extension. For example:
+
+/2014/01/pic/.thumbs/lipsum.jpg.jpg
+
+You can generate all the thumbnails in a tree with this short and
+easy-to-remember command:
+
+find -name .thumbs -prune -o \
+\( -name '*.jpg' -o -name '*.png' -o -name '*.gif' \) -print \
+-execdir mkdir -p .thumbs \; \
+-execdir convert {} -scale x96 -quality 80 ./.thumbs/{}.jpg \;
 .SH ENVIRONMENT
 Depending on how the application was spawned, the following variables may
 either refer to the usual process environment, or to the FastCGI variables

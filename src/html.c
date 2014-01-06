@@ -232,6 +232,7 @@ static int is_min_number(const struct dirent *entry)
 static void list_months(struct context *ctx, char *dirpath, char *year)
 {
 	struct tm tm;
+	memset(&tm, 0, sizeof(tm));
 	tm.tm_year = atoi(year) - 1900;
 	printf(snip_year_header, year);
 	for (tm.tm_mon = 0; tm.tm_mon <= 11; tm.tm_mon++) {

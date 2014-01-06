@@ -1,4 +1,4 @@
-.TH CALF 8 2014-01-05
+.TH CALF 8 2014-01-06
 .SH NAME
 calf - CGI file lister
 .SH SYNOPSIS
@@ -18,7 +18,7 @@ but it will be hidden if it start with a dot.
 
 Of course, \fBcalf\fP should be able to read all these directories. Permission
 issues may cause unexpected results. Also, if a file is found when a directory
-is expected, the result is the same as if the directory wasn't readable.
+is expected, the result is the same as if the directory weren't readable.
 
 Directories under a section are linked but won't be listed by \fBcalf\fP. You
 should set up your web server for auto-indexing in order to do that.
@@ -48,16 +48,20 @@ Usually, the web server takes care of those two variable.
 In addition, the \fICALF_TITLE\fP variable is read to generate the headers of
 the web pages.
 .SH CONFIGURATION
-Sample server section.
-.SS /etc/nginx/nginx.conf
-\&
-.nf
-server {
-    include calf.conf
-}
-.fi
+.SS CGI
+No configuration but your web server's required to use \fBcalf\fP as a CGI
+application.
+.SS FastCGI
+You can launch a FastCGI application in several ways. \fBspawn-fcgi\fP is a
+commonly available tool, and is easy to use.
+
+To run it as a daemon, \fBsystemd\fP provides another cool means of starting
+FastCGI daemons through socket activation. To use it, just enable or start
+\fIcalf.socket\fP. Note that \fBcalf\fP must be built with systemd support.
+.SS Nginx
+A sample configuration file for \fBnginx\fP is installed in
+\fI@pkgdatadir@/nginx.conf\fP. It can be copied and customized in
+\fI/etc/nginx/calf.conf\fP. When you're done, include it in your server block.
 .SH SEE ALSO
-.BR systemd.socket (5),
-.BR fcgiwrap (8),
 .BR spawn-fcgi (1),
-.BR multiwatch (1).
+.BR systemd.socket (5).

@@ -125,6 +125,8 @@ static int list_thumbs(char *dirpath, char *name)
 	int count = scandir(thumbsdir, &items, is_visible, alphasort);
 	if (count < 0)
 		return -1;
+	if (count == 0)
+		return 0;
 	put(snip_listing_thumbnails_header);
 	for (int i = 0; i < count; free(items[i]), i++) {
 		char *base = drop_extension(items[i]->d_name);

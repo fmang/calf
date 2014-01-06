@@ -6,15 +6,19 @@ calf - CGI file lister
 .br
 .B @pkglibexecdir@/calf.fcgi
 .SH DESCRIPTION
-For simplicity, \fBcalf\fP expects a rigid file hierarchy. In short:
+For simplicity, \fBcalf\fP expects a rigid directory structure. In short:
 
+.in +4n
 /year/month/section/files
+.in
 
 The year mustn't contain a leading zero. The month must be written with exactly
 two digits. In other words: YYYY/MM. \fIsection\fP can be an arbitrary string,
 but it will be hidden if it start with a dot.
 
+.in +4n
 /2014/01/pic/lipsum.jpg
+.in
 
 Of course, \fBcalf\fP should be able to read all these directories. Permission
 issues may cause unexpected results. Also, if a file is found when a directory
@@ -27,36 +31,45 @@ Thumbnails are to be put in a directory called \fI.thumbs\fP under the section
 directory. The thumbnail files should be named after the original file,
 followed by an extension. For example:
 
+.in +4n
 /2014/01/pic/.thumbs/lipsum.jpg.jpg
+.in
 
 You can generate all the thumbnails in a tree with this short and
 easy-to-remember command:
+.sp
+.in +4n
 
-find -name .thumbs -prune -o \
-\( -name '*.jpg' -o -name '*.png' -o -name '*.gif' \) -print \
--execdir mkdir -p .thumbs \; \
--execdir convert {} -scale x96 -quality 80 ./.thumbs/{}.jpg \;
+.nf
+find -name .thumbs -prune -o \\
+    \\( -name '*.jpg' -o -name '*.png' -o -name '*.gif' \\) -print \\
+    -execdir mkdir -p .thumbs \\; \\
+    -execdir convert {} -scale x96 -quality 80 ./.thumbs/{}.jpg \\;
+.fi
+.in
 .SH ENVIRONMENT
 Depending on how the application was spawned, the following variables may
 either refer to the usual process environment, or to the FastCGI variables
 the web servers sends to the application.
-.P
-Pretty much like every CGI application, \fBcalf\fP uses the \fIDOCUMENT_ROOT\fP
-and \fIDOCUMENT_URI\fP variables to locate the the directory it should read.
-Usually, the web server takes care of those two variable.
-.P
-In addition, the \fICALF_TITLE\fP variable is read to generate the headers of
-the web pages.
+.TP
+.B DOCUMENT_ROOT, DOCUMENT_URI
+Pretty much like every CGI application, \fBcalf\fP uses these variables to
+locate the the directory it should read. Usually, the web server takes care of
+those two variable. The root directory must respect the directory structure
+described above.
+.TP
+.B CALF_TITLE
+This is the string that appears in the title of the HTML pages. Easy enough.
 .SH CONFIGURATION
 .SS CGI
-No configuration but your web server's required to use \fBcalf\fP as a CGI
+No configuration but your web server's is required to use \fBcalf\fP as a CGI
 application.
 .SS FastCGI
 You can launch a FastCGI application in several ways. \fBspawn-fcgi\fP is a
 commonly available tool, and is easy to use.
 
-To run it as a daemon, \fBsystemd\fP provides another cool means of starting
-FastCGI daemons through socket activation. To use it, just enable or start
+To run it as a daemon, \fBsystemd\fP provides a cool means of starting FastCGI
+daemons through socket activation. To use it, just enable or start
 \fIcalf.socket\fP. Note that \fBcalf\fP must be built with systemd support.
 .SS Nginx
 A sample configuration file for \fBnginx\fP is installed in

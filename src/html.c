@@ -275,8 +275,10 @@ static int list_years(struct context *ctx)
 void html_main(struct context *ctx)
 {
 	obstack_init(&ob);
-	printf(snip_header, ft(snip_date_title, &ctx->date), html_escape(ctx->title));
+	char *title = ft(snip_date_title, &ctx->date);
+	printf(snip_header, title, html_escape(ctx->title));
 	list_years(ctx);
+	printf(snip_title, title);
 	if (listings(ctx) <= 0)
 		put(snip_empty);
 	put(snip_footer);

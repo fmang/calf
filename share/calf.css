@@ -1,6 +1,7 @@
 body {
 	background-color: #1f3370;
-	color: #c2ccd9;
+	color: #b2bcd9;
+	margin: 0;
 }
 
 a {
@@ -11,10 +12,16 @@ a img {
 	border-width: 0;
 }
 
+h1 {
+	margin: 20px;
+	font-weight: 100;
+	font-size: 2em;
+}
+
 .listing {
 	background-color: #929cd9;
 	color: #010211;
-	margin: 15px;
+	margin: 20px;
 }
 
 .listing a {
@@ -67,16 +74,19 @@ a img {
 .calendar {
 	text-align:center;
 	font-size: 1.1em;
+	background-color: #0f2350;
+	padding: 5px;
 }
 
 .calendar div {
-	margin: 10px;
+	margin: 5px;
 }
 
 .calendar .year {
-	font-weight: bold;
+	font-size: 1.1em;
+	padding-right: 10px;
 }
 
 .calendar .current {
-	color: #52cce9;
+	color: #dfdfef;
 }

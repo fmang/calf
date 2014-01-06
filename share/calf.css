@@ -1,5 +1,14 @@
 body {
 	background-color: #1f3370;
+	color: #c2ccd9;
+}
+
+a {
+	color: #727cf9;
+}
+
+a img {
+	border-width: 0;
 }
 
 .listing {
@@ -8,38 +17,41 @@ body {
 	margin: 15px;
 }
 
-a {
+.listing a {
 	color: #000312;
 	text-decoration: none;
 }
 
-tr:hover a {
+.listing tr:hover a {
 	color: #0d4f74;
 }
 
-h2 {
+.listing h2 {
 	margin: 0;
 	padding: 10px 15px;
 	font-size: 1.7em;
 	font-weight: 100;
 }
 
-table {
+.listing table {
 	width: 100%;
 	border-spacing: 0;
 }
 
-td a, td.empty {
+.listing td a {
 	display: block;
+}
+
+.listing td a, .listing td.empty {
 	padding: 7px 14px;
 }
 
-td.size {
+.listing td.size {
 	width: 100px;
 	text-align: right;
 }
 
-tr:nth-child(odd){
+.listing tr:nth-child(odd){
 	background: #8992d5;
 }
 
@@ -52,22 +64,19 @@ tr:nth-child(odd){
 	padding: 2px;
 }
 
-a img {
-	border-width: 0;
-}
-
 .calendar {
 	text-align:center;
+	font-size: 1.1em;
 }
 
-.calendar h3 {
-	font-size: 1em;
+.calendar div {
+	margin: 10px;
 }
 
-.calendar .current {
+.calendar .year {
 	font-weight: bold;
 }
 
-.calendar a {
-	color: #005;
+.calendar .current {
+	color: #52cce9;
 }

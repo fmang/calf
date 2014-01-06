@@ -139,7 +139,7 @@ static int list_thumbs(char *dirpath, char *name)
 			uri_escape(base), html_escape(base)
 		);
 	}
-	if (count >= 0)
+	if (count > 0)
 		free(items);
 	put(snip_listing_thumbnails_footer);
 	return 0;
@@ -185,7 +185,7 @@ static int list_files(char *dirpath, char *name)
 		);
 		free(items[i]);
 	}
-	if (count >= 0)
+	if (count > 0)
 		free(items);
 	put(snip_listing_table_footer);
 	return 0;
@@ -211,7 +211,7 @@ static int listings(struct context *ctx)
 		listing(path, items[i]->d_name);
 		free(items[i]);
 	}
-	if (count >= 0)
+	if (count > 0)
 		free(items);
 	return count;
 }
@@ -264,7 +264,7 @@ static int list_years(struct context *ctx)
 		list_months(ctx, path, items[i]->d_name);
 		free(items[i]);
 	}
-	if (count >= 0)
+	if (count > 0)
 		free(items);
 	put(snip_calendar_footer);
 	return count;

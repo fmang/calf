@@ -13,6 +13,7 @@ a img {
 }
 
 h1 {
+	color: #d2dce9;
 	margin: 20px;
 	font-weight: 100;
 	font-size: 2em;
@@ -64,7 +65,7 @@ h1 {
 
 .thumbnails {
 	padding: 10px;
-	background-color: #b2ace9;
+	background-color: #a2ace9;
 }
 
 .thumbnails img {

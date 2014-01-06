@@ -17,7 +17,7 @@ two digits. In other words: YYYY/MM. \fIsection\fP can be an arbitrary string,
 but it will be hidden if it start with a dot.
 
 .in +4n
-/2014/01/pic/lipsum.png
+/2014/01/pic/lipsum.jpg
 .in
 
 Of course, \fBcalf\fP should be able to read all these directories. Permission
@@ -32,7 +32,7 @@ directory. The thumbnail files should be named after the original file,
 followed by an extension. For example:
 
 .in +4n
-/2014/01/pic/.thumbs/lipsum.png.png
+/2014/01/pic/.thumbs/lipsum.jpg.jpg
 .in
 
 You can generate all the thumbnails in a tree with this short and
@@ -45,7 +45,7 @@ find -name .thumbs -prune -o \\
     \\( -name '*.jpg' -o -name '*.png' -o -name '*.gif' \\) -print \\
     -execdir mkdir -p .thumbs \\; \\
     -execdir convert -define jpeg:size=256x256 {} -auto-orient \\
-    -thumbnail 96x96^ -extent 96x96 -quality 95 ./.thumbs/{}.png \\;
+    -thumbnail 96x96^ -extent 96x96 -quality 80 ./.thumbs/{}.jpg \\;
 .fi
 .in
 .SH ENVIRONMENT

@@ -121,7 +121,7 @@ static int is_regular_file(const char *path)
 static int list_thumbs(char *dirpath, char *name)
 {
 	char *thumbsdir = concat(dirpath, ".thumbs/");
-	struct dirent **items;
+	struct dirent **items = NULL;
 	int count = scandir(thumbsdir, &items, is_visible, alphasort);
 	if (count < 0)
 		return -1;
@@ -168,7 +168,7 @@ static char *format_size(struct stat *st)
 
 static int list_files(char *dirpath, char *name)
 {
-	struct dirent **items;
+	struct dirent **items = NULL;
 	int count = scandir(dirpath, &items, to_list, alphasort);
 	if (count < 0)
 		return -1;
@@ -203,7 +203,7 @@ static void listing(char *dirpath, char *name)
 
 static int listings(struct context *ctx)
 {
-	struct dirent **items;
+	struct dirent **items = NULL;
 	char *dirpath = concat(ctx->root, ft("/%Y/%m/", &ctx->date));
 	int count = scandir(dirpath, &items, is_visible, alphasort);
 	for (int i = 0; i < count; i++) {
@@ -253,7 +253,7 @@ static void list_months(struct context *ctx, char *dirpath, char *year)
 
 static int list_years(struct context *ctx)
 {
-	struct dirent **items;
+	struct dirent **items = NULL;
 	int count = scandir(ctx->root, &items, is_min_number, alphasort);
 	if (count < 0)
 		return -1;

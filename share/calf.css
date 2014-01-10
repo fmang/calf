@@ -1,94 +1,30 @@
 body {
-	background-color: #1f3370;
-	color: #b2bcd9;
+	background-color: #FDFAF9;
+	color: #1F1F1F;
 	margin: 0;
 }
 
 a {
-	color: #727cf9;
+	text-decoration: none;
 }
 
 a img {
 	border-width: 0;
 }
 
-h1 {
-	color: #d2dce9;
-	margin: 20px;
-	font-weight: 100;
-	font-size: 2em;
-}
-
-.listing {
-	background-color: #929cd9;
-	color: #010211;
-	margin: 20px;
-}
-
-.listing a {
-	color: #000312;
-	text-decoration: none;
-}
-
-.listing tr:hover a {
-	color: #0d4f74;
-}
-
-.listing h2 {
-	margin: 0;
-	padding: 10px 15px;
-	font-size: 1.7em;
-	font-weight: 100;
-}
-
-.listing table {
-	width: 100%;
-	border-spacing: 0;
-}
-
-.listing td a {
-	display: block;
-}
-
-.listing td a, .listing td.empty {
-	padding: 7px 14px;
-}
-
-.listing td.size {
-	width: 100px;
-	text-align: right;
-}
-
-.listing tr:nth-child(odd){
-	background: #8992d5;
-}
-
-.thumbnails {
-	padding: 10px;
-	background-color: #a2ace9;
-}
-
-.thumbnails img {
-	padding: 2px;
-}
-
 .calendar {
-	text-align:center;
+	background-color: #25262B;
+	color: #DCCBAC;
+	text-align: center;
 	font-size: 1.1em;
-	background-color: #0f2350;
+}
+
+.calendar, .calendar div {
 	padding: 5px;
 }
 
-.calendar a {
-	text-decoration: none;
-}
-
-.calendar a:hover {
-	text-decoration: underline;
-}
-
-.calendar div {
-	margin: 5px;
+.calendar .current {
+	color: #F1DCC1;
 }
 
 .calendar .year {
@@ -96,6 +32,67 @@ h1 {
 	padding-right: 10px;
 }
 
-.calendar .current {
-	color: #dfdfef;
+.calendar a {
+	color: #8EC49B;
+}
+
+.calendar a:hover {
+	text-decoration: underline;
+}
+
+h1, h2 {
+	font-weight: 100;
+}
+
+h1 {
+	font-size: 3em;
+	color: #E75699;
+	margin: 30px auto;
+}
+
+h1, .listing {
+	max-width: 800px;
+}
+
+h2 {
+	color: #508364;
+	font-size: 2.2em;
+	margin: 0;
+}
+
+.listing h2, .listing tr a, .listing .empty, .thumbnails img {
+	padding: 5px;
+}
+
+.listing {
+	background-color: #E8E5E4;
+	padding: 10px;
+	margin: 20px auto;
+	box-shadow: 1px 1px 1px #B5B2B2;
+}
+
+.listing tr a {
+	display: block;
+	color: #25262B;
+}
+
+.listing .empty {
+	color: #4D4F5E;
+}
+
+.listing tr:hover a {
+	color: #686B80;
+}
+
+.listing table {
+	width: 100%;
+	font-size: 1.1em;
+}
+
+.listing td.size {
+	width: 100px;
+}
+
+.thumbnails {
+	font-size: 0;
 }

@@ -14,7 +14,7 @@ a img {
 
 .calendar {
 	background-color: #25262B;
-	color: #DCCBAC;
+	color: #C2B397;
 	text-align: center;
 	font-size: 1.1em;
 }
@@ -24,7 +24,7 @@ a img {
 }
 
 .calendar .current {
-	color: #F1DCC1;
+	color: #8EC49B;
 }
 
 .calendar .year {
@@ -33,7 +33,7 @@ a img {
 }
 
 .calendar a {
-	color: #8EC49B;
+	color: #FAE4C8;
 }
 
 .calendar a:hover {
@@ -47,11 +47,12 @@ h1, h2 {
 h1 {
 	font-size: 3em;
 	color: #E75699;
-	margin: 30px auto;
 }
 
 h1, .listing {
 	max-width: 800px;
+	margin: 20px auto;
+	padding: 10px;
 }
 
 h2 {
@@ -66,8 +67,6 @@ h2 {
 
 .listing {
 	background-color: #E8E5E4;
-	padding: 10px;
-	margin: 20px auto;
 	box-shadow: 1px 1px 1px #B5B2B2;
 }
 

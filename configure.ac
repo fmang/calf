@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.69])
-AC_INIT([calf], [2.0], [fmang+calf@mg0.fr])
+AC_INIT([calf], [2.1], [fmang+calf@mg0.fr])
 AM_INIT_AUTOMAKE([foreign no-exeext])
 AC_CONFIG_SRCDIR([src/calf.c])
 AC_CONFIG_HEADERS([config.h])

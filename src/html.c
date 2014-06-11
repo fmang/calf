@@ -229,46 +229,99 @@ static int is_min_number(const struct dirent *entry)
 	return 1;
 }
 
-static void list_months(struct context *ctx, char *dirpath, char *year)
+static void list_months(struct context *ctx, int year)
 {
 	struct tm tm;
 	memset(&tm, 0, sizeof(tm));
-	tm.tm_year = atoi(year) - 1900;
-	printf(snip_year_header, year);
+	tm.tm_year = year - 1900;
 	for (tm.tm_mon = 0; tm.tm_mon <= 11; tm.tm_mon++) {
 		if (tm.tm_mon != 0)
 			put(snip_month_separator);
-		char *path = concat(dirpath, ft("%m", &tm));
 		int current = tm.tm_year == ctx->date.tm_year && tm.tm_mon == ctx->date.tm_mon;
-		char *uri = ft("%Y/%m", &tm);
-		printf(
+		char *path = concat(ctx->root, ft("/%Y/%m", &tm));
+		put(ft(
 			current ? snip_month_current :
 			!access(path, F_OK) ? snip_month_linked :
 			snip_month_regular,
-			ft(snip_date_month, &tm),
-			uri
-		);
+			&tm
+		));
 	}
-	put(snip_year_footer);
 }
 
-static int list_years(struct context *ctx)
+static int scan_years(struct context *ctx, int *previous,
+                       int *current, int *next)
 {
+	*previous = *current = *next = -1;
 	struct dirent **items = NULL;
 	int count = scandir(ctx->root, &items, is_min_number, alphasort);
 	if (count < 0)
 		return -1;
 	char *root = concat(ctx->root, "/");
-	put(snip_calendar_header);
+	int this_year = ctx->date.tm_year + 1900;
 	for (int i = 0; i < count; i++) {
-		char *path = concat(concat(root, items[i]->d_name), "/");
-		list_months(ctx, path, items[i]->d_name);
+		int year = atoi(items[i]->d_name);
+		if (year < this_year)
+			*previous = year;
+		else if (year == this_year)
+			*current = year;
+		else if (*next == -1)
+			*next = year;
 		free(items[i]);
 	}
 	if (count > 0)
 		free(items);
+	return 0;
+}
+
+static void get_last_month(struct context *ctx, int year, struct tm *month)
+{
+	memset(month, 0, sizeof(*month));
+	month->tm_year = year - 1900;
+	for (month->tm_mon = 11; month->tm_mon >= 0; month->tm_mon--) {
+		/* when tm_mon reaches 0, we always return January */
+		char *path = concat(ctx->root, ft("/%Y/%m", month));
+		if (!access(path, F_OK))
+			return;
+	}
+	month->tm_mon = 11;
+}
+
+static void get_first_month(struct context *ctx, int year, struct tm *month)
+{
+	memset(month, 0, sizeof(*month));
+	month->tm_year = year - 1900;
+	for (month->tm_mon = 0; month->tm_mon <= 11; month->tm_mon++) {
+		char *path = concat(ctx->root, ft("/%Y/%m", month));
+		if (!access(path, F_OK))
+			return;
+	}
+	month->tm_mon = 0;
+}
+
+static int list_years(struct context *ctx)
+{
+	int previous, current, next;
+	if (scan_years(ctx, &previous, &current, &next) < 0)
+		return -1;
+	struct tm month;
+	put(snip_calendar_header);
+	if (previous != -1) {
+		get_last_month(ctx, previous, &month);
+		put(ft(snip_year_previous, &month));
+	} else {
+		put(snip_year_previous_inactive);
+	}
+	put(ft(snip_year_current, &ctx->date));
+	if (next != -1) {
+		get_first_month(ctx, next, &month);
+		put(ft(snip_year_next, &month));
+	} else {
+		put(snip_year_next_inactive);
+	}
+	put(snip_calendar_neck);
+	list_months(ctx, ctx->date.tm_year + 1900);
 	put(snip_calendar_footer);
-	return count;
+	return 0;
 }
 
 /******************************************************************************/

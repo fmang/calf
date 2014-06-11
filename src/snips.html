@@ -54,23 +54,31 @@
 @listing footer
 </div>
 
-@date month
-%B%
 
 @calendar header
 <div class="calendar">
-@year header
-	<div>
-		<span class="year">%s:</span>
-@month regular
-		%s
-@month linked
-		<a href="../../%2$s">%1$s</a>
-@month current
-		<span class="current">%s</span>
-@month separator
-		&middot;
-@year footer
+	<div class="year">
+@year previous inactive
+		<span class="jump">&larr;</a>
+@year previous
+		<a href="../../%Y/%m" class="jump">&larr;</a>
+@year current
+		<span class="current">%Y</span>
+@year next inactive
+		<span class="jump">&rarr;</a>
+@year next
+		<a href="../../%Y/%m" class="jump">&rarr;</a>
+@calendar neck
 	</div>
+	<div class="months">
+@month regular
+		<span>%B</span>
+@month linked
+		<a href="../../%Y/%m">%B</a>
+@month current
+		<span class="current">%B</span>
+@month separator
+%
 @calendar footer
+	</div>
 </div>

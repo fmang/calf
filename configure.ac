@@ -46,13 +46,13 @@ AS_IF([test "x$have_fcgi" = xno -a "x$with_systemd" = xyes], [
 	AC_MSG_ERROR([cannot enable socket activation without FastCGI support (please use --with-fcgi)])
 ])
 AS_IF([test "x$have_fcgi" = xyes -a "x$with_systemd" != xno], [
-	PKG_CHECK_MODULES([SYSTEMD_DAEMON], [libsystemd-daemon],
+	PKG_CHECK_MODULES([SYSTEMD_DAEMON], [libsystemd],
 		[have_systemd=yes
 		AC_DEFINE([HAVE_SYSTEMD], [1], [Support for systemd's socket activation.])],
 		[])
 ])
 AS_IF([test "x$with_systemd" = xyes -a "x$have_systemd" = xno], [
-	AC_MSG_ERROR([cannot find libsystemd-daemon])
+	AC_MSG_ERROR([cannot find libsystemd])
 ])
 AM_CONDITIONAL([SYSTEMD], [test "x$have_systemd" = xyes])
 

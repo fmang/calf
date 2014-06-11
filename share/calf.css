@@ -14,29 +14,36 @@ a img {
 
 .calendar {
 	background-color: #25262B;
-	color: #C2B397;
+	color: #76798A;
 	text-align: center;
-	font-size: 1.1em;
+	padding: 10px;
 }
 
-.calendar, .calendar div {
+.calendar div {
 	padding: 5px;
 }
 
+.calendar .year span.jump {
+	visibility: hidden;
+}
+
 .calendar .current {
-	color: #8EC49B;
+	color: #8EE49B;
 }
 
 .calendar .year {
-	font-size: 1.1em;
-	padding-right: 10px;
+	font-size: 1.2em;
 }
 
 .calendar a {
-	color: #FAE4C8;
+	color: #FAE4D8;
 }
 
-.calendar a:hover {
+.calendar .months {
+	word-spacing: 10px;
+}
+
+.calendar .months a:hover {
 	text-decoration: underline;
 }
 

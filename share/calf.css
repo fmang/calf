@@ -119,12 +119,19 @@ h2 a {
 
 .rewind {
 	display: block;
-	font-size: 1.5em;
+	font-size: 14pt;
 	text-align: center;
 	padding-bottom: 20px;
 	color: #CBCCEB;
 }
 
 .rewind:hover {
-	color: #797A8C;
+	color: #B3B1B0;
+	font-size: 0;
+}
+
+.rewind:hover:after {
+	content: attr(title);
+	font-size: 14pt;
+	font-weight: 100;
 }

@@ -67,7 +67,7 @@ h1 {
 
 h1, .listing {
 	max-width: 800px;
-	margin: 20px auto;
+	margin: 15px auto;
 	padding: 10px;
 }
 
@@ -83,7 +83,7 @@ h2 a {
 }
 
 .listing h2, .listing tr a, .listing .empty, .thumbnails img {
-	padding: 5px;
+	padding: 4px;
 }
 
 .listing {

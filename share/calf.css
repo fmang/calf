@@ -14,13 +14,22 @@ a img {
 
 .calendar {
 	background-color: #25262B;
-	color: #76798A;
+	color: #4B4D57;
 	text-align: center;
 	padding: 10px;
 }
 
 .calendar div {
 	padding: 5px;
+}
+
+.calendar .year .jump {
+	padding: 0 15px;
+	color: #909090;
+}
+
+.calendar .year .jump:hover {
+	color: #FAE4D8;
 }
 
 .calendar .year span.jump {

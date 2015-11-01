@@ -42,7 +42,7 @@ easy-to-remember command:
 
 .nf
 find -name .thumbs -prune -o \\
-    \\( -name '*.jpg' -o -name '*.png' -o -name '*.gif' \\) -print \\
+    \\( -iname '*.jpg' -o -iname '*.png' -o -iname '*.gif' \\) -print \\
     -execdir mkdir -p .thumbs \\; \\
     -execdir convert -define jpeg:size=256x256 {} -auto-orient \\
     -thumbnail 96x96^ -extent 96x96 -quality 80 ./.thumbs/{}.jpg \\;

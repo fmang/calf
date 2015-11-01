@@ -5,6 +5,11 @@ Calf is a simple CGI application to generate file listings cooler than your web
 server's. It organizes files by year and month, as it was primarily made for
 browsing archives.
 
+It expects a specific hierarchy to work, that is `/YYYY/MM/something/file`. For
+instance, `/2014/01/pic/lipsum.jpg`.
+
+Here's a live instance: http://files.mg0.fr/2015/09/
+
 Installing
 ----------
 
@@ -23,15 +28,60 @@ specified.
 
 If you expect FastCGI support, use `--with-fcgi` anyway.
 
+Once it is properly configured, you're ready to build and install.
+
 	make
 	make install
 
-Nothing surprising.
-
 systemd users would then grab `calf.service` and `calf.socket` in `systemd/`.
-They are even configured with the proper paths.
+They are configured with the proper paths.
 
 Setting up
 ----------
 
-Check the man page, calf(8).
+Check the man page, calf(8), for all the details.
+
+You'll find below the recommended set-up with nginx and systemd. If you want to
+use another web server or init system, please read the man page.
+
+### Nginx
+
+A sample configuration file is ready once you've installed calf. In order to
+edit it, it's better to copy it in `/etc/nginx/`:
+
+	cp -i /usr/share/calf/nginx.conf /etc/nginx/calf.conf
+
+Now, open `/etc/nginx/nginx.conf` and add the appropriate section:
+
+	server {
+		server_name files.example.com;
+		listen 80;
+		root /srv/calf/;
+		autoindex on;
+		include calf.conf;
+	}
+
+The `root` directory is the one calf will list. Feel free to set it up anywhere
+you like, but ensure the `http` user has access to it.
+
+### systemd
+
+As root:
+
+	systemctl enable calf.socket
+	systemctl start calf.socket
+
+Note that you need to install the `calf.service` and `calf.socket` units in
+order for this to work.
+
+### Thumbnails
+
+For the file `/2014/01/pic/lipsum.jpg`, calf expects the thumbnail to be
+located at `/2014/01/pic/.thumbs/lipsum.jpg.jpg`. Note that it needs not be a
+JPEG thumbnail.
+
+You're responsible for generating thumbnails as you add new files. A cool
+command for this is:
+
+	convert -define jpeg:size=256x256 FILE -auto-orient \
+	-thumbnail 96x96^ -extent 96x96 -quality 80 ./.thumbs/FILE.jpg
